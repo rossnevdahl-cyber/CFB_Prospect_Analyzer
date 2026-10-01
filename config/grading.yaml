@@ -1,0 +1,24 @@
+# Composite grade configuration. Edit on GitHub; Vercel redeploys with the new values.
+# Weights per position do not need to sum to 1 — they are normalized at runtime.
+scoring:
+  ppr: 1.0          # points per reception
+  pass_td: 5        # points per passing TD
+  pass_yd: 0.04     # points per passing yard
+  rush_rec_yd: 0.1  # points per rushing/receiving yard
+  rush_rec_td: 6
+  int: -2
+  fumble_lost: -2
+  two_pt: 2
+  superflex: true
+weights:
+  WR: {production: 0.30, efficiency: 0.15, age_breakout: 0.20, athleticism: 0.10, draft_capital: 0.15, pedigree: 0.05, context: 0.05}
+  RB: {production: 0.25, efficiency: 0.20, age_breakout: 0.10, athleticism: 0.15, draft_capital: 0.20, pedigree: 0.05, context: 0.05}
+  TE: {production: 0.25, efficiency: 0.15, age_breakout: 0.15, athleticism: 0.20, draft_capital: 0.15, pedigree: 0.05, context: 0.05}
+  QB: {production: 0.20, efficiency: 0.30, age_breakout: 0.05, athleticism: 0.15, draft_capital: 0.20, pedigree: 0.05, context: 0.05}
+breakout_threshold: {WR: 0.20, TE: 0.15, RB: 0.15}
+tiers: {Elite: 85, Starter: 70, Flex: 55, Dart: 40}
+comps: {count: 5, min_similarity: 0.60}
+# Minimum number of historical values a feature needs before it counts toward the grade.
+min_history_sample: 30
+# Height/weight weight in the comp distance (the grade weights are reused for everything else).
+comp_size_weight: 0.10

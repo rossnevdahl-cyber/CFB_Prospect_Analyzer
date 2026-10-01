@@ -1,0 +1,41 @@
+name: update-history
+
+# Each offseason after the draft (mid-May), or on demand.
+on:
+  schedule:
+    - cron: "23 10 15 5 *"
+  workflow_dispatch:
+    inputs:
+      from:
+        description: "First draft class"
+        default: "2006"
+      to:
+        description: "Last draft class (blank = latest)"
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  history:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      CFBD_API_KEY: ${{ secrets.CFBD_API_KEY }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm db:migrate
+      - run: pnpm update:history --from ${{ inputs.from || '2006' }} ${{ inputs.to && format('--to {0}', inputs.to) || '' }}
+      - name: Commit coverage notes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/data-coverage.md
+          git diff --cached --quiet || (git commit -m "Update data coverage notes" && git push)

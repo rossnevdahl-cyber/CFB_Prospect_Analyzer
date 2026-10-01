@@ -1,0 +1,1755 @@
+{
+ "/stats/player/season?seasonType=both&team=Ohio State&year=2024": [
+  {
+   "season": 2024,
+   "playerId": "4870001",
+   "player": "Test Receiver",
+   "position": "WR",
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "category": "receiving",
+   "statType": "REC",
+   "stat": "40"
+  },
+  {
+   "season": 2024,
+   "playerId": "4870001",
+   "player": "Test Receiver",
+   "position": "WR",
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "category": "receiving",
+   "statType": "YDS",
+   "stat": "600"
+  },
+  {
+   "season": 2024,
+   "playerId": "4870001",
+   "player": "Test Receiver",
+   "position": "WR",
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "category": "receiving",
+   "statType": "TD",
+   "stat": "5"
+  },
+  {
+   "season": 2024,
+   "playerId": "4870001",
+   "player": "Test Receiver",
+   "position": "WR",
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "category": "receiving",
+   "statType": "YPR",
+   "stat": "15"
+  },
+  {
+   "season": 2024,
+   "playerId": "4870001",
+   "player": "Test Receiver",
+   "position": "WR",
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "category": "receiving",
+   "statType": "LONG",
+   "stat": "70"
+  },
+  {
+   "season": 2024,
+   "playerId": "999",
+   "player": "Other Guy",
+   "position": "WR",
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "category": "receiving",
+   "statType": "REC",
+   "stat": "70"
+  },
+  {
+   "season": 2024,
+   "playerId": "999",
+   "player": "Other Guy",
+   "position": "WR",
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "category": "receiving",
+   "statType": "YDS",
+   "stat": "1100"
+  }
+ ],
+ "/stats/player/season?seasonType=both&team=Oregon&year=2025": [
+  {
+   "season": 2025,
+   "playerId": "4870001",
+   "player": "Test Receiver",
+   "position": "WR",
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "category": "receiving",
+   "statType": "REC",
+   "stat": "85"
+  },
+  {
+   "season": 2025,
+   "playerId": "4870001",
+   "player": "Test Receiver",
+   "position": "WR",
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "category": "receiving",
+   "statType": "YDS",
+   "stat": "1300"
+  },
+  {
+   "season": 2025,
+   "playerId": "4870001",
+   "player": "Test Receiver",
+   "position": "WR",
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "category": "receiving",
+   "statType": "TD",
+   "stat": "12"
+  },
+  {
+   "season": 2025,
+   "playerId": "4870001",
+   "player": "Test Receiver",
+   "position": "WR",
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "category": "receiving",
+   "statType": "YPR",
+   "stat": "15.3"
+  },
+  {
+   "season": 2025,
+   "playerId": "4870001",
+   "player": "Test Receiver",
+   "position": "WR",
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "category": "rushing",
+   "statType": "CAR",
+   "stat": "5"
+  },
+  {
+   "season": 2025,
+   "playerId": "4870001",
+   "player": "Test Receiver",
+   "position": "WR",
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "category": "rushing",
+   "statType": "YDS",
+   "stat": "40"
+  },
+  {
+   "season": 2025,
+   "playerId": "4870001",
+   "player": "Test Receiver",
+   "position": "WR",
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "category": "rushing",
+   "statType": "TD",
+   "stat": "0"
+  }
+ ],
+ "/stats/season?year=2024": [
+  {
+   "season": 2024,
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "statName": "games",
+   "statValue": 14
+  },
+  {
+   "season": 2024,
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "statName": "passAttempts",
+   "statValue": 400
+  },
+  {
+   "season": 2024,
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "statName": "netPassingYards",
+   "statValue": 3500
+  },
+  {
+   "season": 2024,
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "statName": "passingTDs",
+   "statValue": 30
+  },
+  {
+   "season": 2024,
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "statName": "rushingAttempts",
+   "statValue": 480
+  },
+  {
+   "season": 2024,
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "statName": "rushingYards",
+   "statValue": 2600
+  },
+  {
+   "season": 2024,
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "statName": "rushingTDs",
+   "statValue": 28
+  },
+  {
+   "season": 2024,
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "statName": "sacksOpponent",
+   "statValue": 20
+  },
+  {
+   "season": 2024,
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "statName": "games",
+   "statValue": 13
+  },
+  {
+   "season": 2024,
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "statName": "passAttempts",
+   "statValue": 420
+  },
+  {
+   "season": 2024,
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "statName": "netPassingYards",
+   "statValue": 3700
+  },
+  {
+   "season": 2024,
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "statName": "passingTDs",
+   "statValue": 32
+  },
+  {
+   "season": 2024,
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "statName": "rushingAttempts",
+   "statValue": 430
+  },
+  {
+   "season": 2024,
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "statName": "rushingYards",
+   "statValue": 2300
+  },
+  {
+   "season": 2024,
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "statName": "rushingTDs",
+   "statValue": 25
+  },
+  {
+   "season": 2024,
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "statName": "sacksOpponent",
+   "statValue": 18
+  },
+  {
+   "season": 2024,
+   "team": "Michigan",
+   "conference": "Big Ten",
+   "statName": "games",
+   "statValue": 12
+  },
+  {
+   "season": 2024,
+   "team": "Michigan",
+   "conference": "Big Ten",
+   "statName": "passAttempts",
+   "statValue": 300
+  },
+  {
+   "season": 2024,
+   "team": "Michigan",
+   "conference": "Big Ten",
+   "statName": "netPassingYards",
+   "statValue": 2200
+  },
+  {
+   "season": 2024,
+   "team": "Michigan",
+   "conference": "Big Ten",
+   "statName": "passingTDs",
+   "statValue": 15
+  },
+  {
+   "season": 2024,
+   "team": "Michigan",
+   "conference": "Big Ten",
+   "statName": "rushingAttempts",
+   "statValue": 520
+  },
+  {
+   "season": 2024,
+   "team": "Michigan",
+   "conference": "Big Ten",
+   "statName": "rushingYards",
+   "statValue": 2500
+  },
+  {
+   "season": 2024,
+   "team": "Michigan",
+   "conference": "Big Ten",
+   "statName": "rushingTDs",
+   "statValue": 26
+  },
+  {
+   "season": 2024,
+   "team": "Michigan",
+   "conference": "Big Ten",
+   "statName": "sacksOpponent",
+   "statValue": 25
+  }
+ ],
+ "/stats/season/advanced?classification=fbs&year=2024": [
+  {
+   "season": 2024,
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "offense": {
+    "plays": 900,
+    "lineYards": 3.2,
+    "passingPlays": {
+     "ppa": 0.35,
+     "successRate": 0.45,
+     "totalPPA": 100,
+     "explosiveness": 1.2,
+     "rate": 0.5
+    },
+    "rushingPlays": {
+     "ppa": 0.1,
+     "successRate": 0.42,
+     "totalPPA": 50,
+     "explosiveness": 1,
+     "rate": 0.5
+    }
+   },
+   "defense": {}
+  },
+  {
+   "season": 2024,
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "offense": {
+    "plays": 980,
+    "lineYards": 3,
+    "passingPlays": {
+     "ppa": 0.3,
+     "successRate": 0.45,
+     "totalPPA": 100,
+     "explosiveness": 1.2,
+     "rate": 0.5
+    },
+    "rushingPlays": {
+     "ppa": 0.1,
+     "successRate": 0.42,
+     "totalPPA": 50,
+     "explosiveness": 1,
+     "rate": 0.5
+    }
+   },
+   "defense": {}
+  },
+  {
+   "season": 2024,
+   "team": "Michigan",
+   "conference": "Big Ten",
+   "offense": {
+    "plays": 780,
+    "lineYards": 2.8,
+    "passingPlays": {
+     "ppa": 0.1,
+     "successRate": 0.45,
+     "totalPPA": 100,
+     "explosiveness": 1.2,
+     "rate": 0.5
+    },
+    "rushingPlays": {
+     "ppa": 0.1,
+     "successRate": 0.42,
+     "totalPPA": 50,
+     "explosiveness": 1,
+     "rate": 0.5
+    }
+   },
+   "defense": {}
+  }
+ ],
+ "/ratings/sp?year=2024": [
+  {
+   "year": 2024,
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "rating": 30,
+   "ranking": 1,
+   "sos": null,
+   "offense": {},
+   "defense": {},
+   "specialTeams": {}
+  },
+  {
+   "year": 2024,
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "rating": 25,
+   "ranking": 2,
+   "sos": null,
+   "offense": {},
+   "defense": {},
+   "specialTeams": {}
+  },
+  {
+   "year": 2024,
+   "team": "Michigan",
+   "conference": "Big Ten",
+   "rating": 15,
+   "ranking": 3,
+   "sos": null,
+   "offense": {},
+   "defense": {},
+   "specialTeams": {}
+  }
+ ],
+ "/games?seasonType=both&year=2024": [
+  {
+   "id": 20241,
+   "season": 2024,
+   "homeTeam": "Ohio State",
+   "awayTeam": "Michigan"
+  },
+  {
+   "id": 20242,
+   "season": 2024,
+   "homeTeam": "Oregon",
+   "awayTeam": "Ohio State"
+  },
+  {
+   "id": 20243,
+   "season": 2024,
+   "homeTeam": "Michigan",
+   "awayTeam": "Oregon"
+  }
+ ],
+ "/stats/season?year=2025": [
+  {
+   "season": 2025,
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "statName": "games",
+   "statValue": 14
+  },
+  {
+   "season": 2025,
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "statName": "passAttempts",
+   "statValue": 400
+  },
+  {
+   "season": 2025,
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "statName": "netPassingYards",
+   "statValue": 3500
+  },
+  {
+   "season": 2025,
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "statName": "passingTDs",
+   "statValue": 30
+  },
+  {
+   "season": 2025,
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "statName": "rushingAttempts",
+   "statValue": 480
+  },
+  {
+   "season": 2025,
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "statName": "rushingYards",
+   "statValue": 2600
+  },
+  {
+   "season": 2025,
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "statName": "rushingTDs",
+   "statValue": 28
+  },
+  {
+   "season": 2025,
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "statName": "sacksOpponent",
+   "statValue": 20
+  },
+  {
+   "season": 2025,
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "statName": "games",
+   "statValue": 13
+  },
+  {
+   "season": 2025,
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "statName": "passAttempts",
+   "statValue": 420
+  },
+  {
+   "season": 2025,
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "statName": "netPassingYards",
+   "statValue": 3700
+  },
+  {
+   "season": 2025,
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "statName": "passingTDs",
+   "statValue": 32
+  },
+  {
+   "season": 2025,
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "statName": "rushingAttempts",
+   "statValue": 430
+  },
+  {
+   "season": 2025,
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "statName": "rushingYards",
+   "statValue": 2300
+  },
+  {
+   "season": 2025,
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "statName": "rushingTDs",
+   "statValue": 25
+  },
+  {
+   "season": 2025,
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "statName": "sacksOpponent",
+   "statValue": 18
+  },
+  {
+   "season": 2025,
+   "team": "Michigan",
+   "conference": "Big Ten",
+   "statName": "games",
+   "statValue": 12
+  },
+  {
+   "season": 2025,
+   "team": "Michigan",
+   "conference": "Big Ten",
+   "statName": "passAttempts",
+   "statValue": 300
+  },
+  {
+   "season": 2025,
+   "team": "Michigan",
+   "conference": "Big Ten",
+   "statName": "netPassingYards",
+   "statValue": 2200
+  },
+  {
+   "season": 2025,
+   "team": "Michigan",
+   "conference": "Big Ten",
+   "statName": "passingTDs",
+   "statValue": 15
+  },
+  {
+   "season": 2025,
+   "team": "Michigan",
+   "conference": "Big Ten",
+   "statName": "rushingAttempts",
+   "statValue": 520
+  },
+  {
+   "season": 2025,
+   "team": "Michigan",
+   "conference": "Big Ten",
+   "statName": "rushingYards",
+   "statValue": 2500
+  },
+  {
+   "season": 2025,
+   "team": "Michigan",
+   "conference": "Big Ten",
+   "statName": "rushingTDs",
+   "statValue": 26
+  },
+  {
+   "season": 2025,
+   "team": "Michigan",
+   "conference": "Big Ten",
+   "statName": "sacksOpponent",
+   "statValue": 25
+  }
+ ],
+ "/stats/season/advanced?classification=fbs&year=2025": [
+  {
+   "season": 2025,
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "offense": {
+    "plays": 900,
+    "lineYards": 3.2,
+    "passingPlays": {
+     "ppa": 0.35,
+     "successRate": 0.45,
+     "totalPPA": 100,
+     "explosiveness": 1.2,
+     "rate": 0.5
+    },
+    "rushingPlays": {
+     "ppa": 0.1,
+     "successRate": 0.42,
+     "totalPPA": 50,
+     "explosiveness": 1,
+     "rate": 0.5
+    }
+   },
+   "defense": {}
+  },
+  {
+   "season": 2025,
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "offense": {
+    "plays": 980,
+    "lineYards": 3,
+    "passingPlays": {
+     "ppa": 0.3,
+     "successRate": 0.45,
+     "totalPPA": 100,
+     "explosiveness": 1.2,
+     "rate": 0.5
+    },
+    "rushingPlays": {
+     "ppa": 0.1,
+     "successRate": 0.42,
+     "totalPPA": 50,
+     "explosiveness": 1,
+     "rate": 0.5
+    }
+   },
+   "defense": {}
+  },
+  {
+   "season": 2025,
+   "team": "Michigan",
+   "conference": "Big Ten",
+   "offense": {
+    "plays": 780,
+    "lineYards": 2.8,
+    "passingPlays": {
+     "ppa": 0.1,
+     "successRate": 0.45,
+     "totalPPA": 100,
+     "explosiveness": 1.2,
+     "rate": 0.5
+    },
+    "rushingPlays": {
+     "ppa": 0.1,
+     "successRate": 0.42,
+     "totalPPA": 50,
+     "explosiveness": 1,
+     "rate": 0.5
+    }
+   },
+   "defense": {}
+  }
+ ],
+ "/ratings/sp?year=2025": [
+  {
+   "year": 2025,
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "rating": 30,
+   "ranking": 1,
+   "sos": null,
+   "offense": {},
+   "defense": {},
+   "specialTeams": {}
+  },
+  {
+   "year": 2025,
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "rating": 25,
+   "ranking": 2,
+   "sos": null,
+   "offense": {},
+   "defense": {},
+   "specialTeams": {}
+  },
+  {
+   "year": 2025,
+   "team": "Michigan",
+   "conference": "Big Ten",
+   "rating": 15,
+   "ranking": 3,
+   "sos": null,
+   "offense": {},
+   "defense": {},
+   "specialTeams": {}
+  }
+ ],
+ "/games?seasonType=both&year=2025": [
+  {
+   "id": 20251,
+   "season": 2025,
+   "homeTeam": "Ohio State",
+   "awayTeam": "Michigan"
+  },
+  {
+   "id": 20252,
+   "season": 2025,
+   "homeTeam": "Oregon",
+   "awayTeam": "Ohio State"
+  },
+  {
+   "id": 20253,
+   "season": 2025,
+   "homeTeam": "Michigan",
+   "awayTeam": "Oregon"
+  }
+ ],
+ "/games/players?seasonType=both&team=Ohio State&year=2024": [
+  {
+   "id": 100,
+   "teams": [
+    {
+     "team": "Ohio State",
+     "conference": "Big Ten",
+     "homeAway": "home",
+     "points": 30,
+     "categories": [
+      {
+       "name": "receiving",
+       "types": [
+        {
+         "name": "YDS",
+         "athletes": [
+          {
+           "id": "4870001",
+           "name": "x",
+           "stat": "50"
+          },
+          {
+           "id": "999",
+           "name": "x",
+           "stat": "50"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 101,
+   "teams": [
+    {
+     "team": "Ohio State",
+     "conference": "Big Ten",
+     "homeAway": "home",
+     "points": 30,
+     "categories": [
+      {
+       "name": "receiving",
+       "types": [
+        {
+         "name": "YDS",
+         "athletes": [
+          {
+           "id": "4870001",
+           "name": "x",
+           "stat": "50"
+          },
+          {
+           "id": "999",
+           "name": "x",
+           "stat": "50"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 102,
+   "teams": [
+    {
+     "team": "Ohio State",
+     "conference": "Big Ten",
+     "homeAway": "home",
+     "points": 30,
+     "categories": [
+      {
+       "name": "receiving",
+       "types": [
+        {
+         "name": "YDS",
+         "athletes": [
+          {
+           "id": "4870001",
+           "name": "x",
+           "stat": "50"
+          },
+          {
+           "id": "999",
+           "name": "x",
+           "stat": "50"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 103,
+   "teams": [
+    {
+     "team": "Ohio State",
+     "conference": "Big Ten",
+     "homeAway": "home",
+     "points": 30,
+     "categories": [
+      {
+       "name": "receiving",
+       "types": [
+        {
+         "name": "YDS",
+         "athletes": [
+          {
+           "id": "4870001",
+           "name": "x",
+           "stat": "50"
+          },
+          {
+           "id": "999",
+           "name": "x",
+           "stat": "50"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 104,
+   "teams": [
+    {
+     "team": "Ohio State",
+     "conference": "Big Ten",
+     "homeAway": "home",
+     "points": 30,
+     "categories": [
+      {
+       "name": "receiving",
+       "types": [
+        {
+         "name": "YDS",
+         "athletes": [
+          {
+           "id": "4870001",
+           "name": "x",
+           "stat": "50"
+          },
+          {
+           "id": "999",
+           "name": "x",
+           "stat": "50"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 105,
+   "teams": [
+    {
+     "team": "Ohio State",
+     "conference": "Big Ten",
+     "homeAway": "home",
+     "points": 30,
+     "categories": [
+      {
+       "name": "receiving",
+       "types": [
+        {
+         "name": "YDS",
+         "athletes": [
+          {
+           "id": "4870001",
+           "name": "x",
+           "stat": "50"
+          },
+          {
+           "id": "999",
+           "name": "x",
+           "stat": "50"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 106,
+   "teams": [
+    {
+     "team": "Ohio State",
+     "conference": "Big Ten",
+     "homeAway": "home",
+     "points": 30,
+     "categories": [
+      {
+       "name": "receiving",
+       "types": [
+        {
+         "name": "YDS",
+         "athletes": [
+          {
+           "id": "4870001",
+           "name": "x",
+           "stat": "50"
+          },
+          {
+           "id": "999",
+           "name": "x",
+           "stat": "50"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 107,
+   "teams": [
+    {
+     "team": "Ohio State",
+     "conference": "Big Ten",
+     "homeAway": "home",
+     "points": 30,
+     "categories": [
+      {
+       "name": "receiving",
+       "types": [
+        {
+         "name": "YDS",
+         "athletes": [
+          {
+           "id": "4870001",
+           "name": "x",
+           "stat": "50"
+          },
+          {
+           "id": "999",
+           "name": "x",
+           "stat": "50"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 108,
+   "teams": [
+    {
+     "team": "Ohio State",
+     "conference": "Big Ten",
+     "homeAway": "home",
+     "points": 30,
+     "categories": [
+      {
+       "name": "receiving",
+       "types": [
+        {
+         "name": "YDS",
+         "athletes": [
+          {
+           "id": "4870001",
+           "name": "x",
+           "stat": "50"
+          },
+          {
+           "id": "999",
+           "name": "x",
+           "stat": "50"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 109,
+   "teams": [
+    {
+     "team": "Ohio State",
+     "conference": "Big Ten",
+     "homeAway": "home",
+     "points": 30,
+     "categories": [
+      {
+       "name": "receiving",
+       "types": [
+        {
+         "name": "YDS",
+         "athletes": [
+          {
+           "id": "4870001",
+           "name": "x",
+           "stat": "50"
+          },
+          {
+           "id": "999",
+           "name": "x",
+           "stat": "50"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 110,
+   "teams": [
+    {
+     "team": "Ohio State",
+     "conference": "Big Ten",
+     "homeAway": "home",
+     "points": 30,
+     "categories": [
+      {
+       "name": "receiving",
+       "types": [
+        {
+         "name": "YDS",
+         "athletes": [
+          {
+           "id": "4870001",
+           "name": "x",
+           "stat": "50"
+          },
+          {
+           "id": "999",
+           "name": "x",
+           "stat": "50"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 111,
+   "teams": [
+    {
+     "team": "Ohio State",
+     "conference": "Big Ten",
+     "homeAway": "home",
+     "points": 30,
+     "categories": [
+      {
+       "name": "receiving",
+       "types": [
+        {
+         "name": "YDS",
+         "athletes": [
+          {
+           "id": "4870001",
+           "name": "x",
+           "stat": "50"
+          },
+          {
+           "id": "999",
+           "name": "x",
+           "stat": "50"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 112,
+   "teams": [
+    {
+     "team": "Ohio State",
+     "conference": "Big Ten",
+     "homeAway": "home",
+     "points": 30,
+     "categories": [
+      {
+       "name": "receiving",
+       "types": [
+        {
+         "name": "YDS",
+         "athletes": [
+          {
+           "id": "999",
+           "name": "x",
+           "stat": "50"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 113,
+   "teams": [
+    {
+     "team": "Ohio State",
+     "conference": "Big Ten",
+     "homeAway": "home",
+     "points": 30,
+     "categories": [
+      {
+       "name": "receiving",
+       "types": [
+        {
+         "name": "YDS",
+         "athletes": [
+          {
+           "id": "999",
+           "name": "x",
+           "stat": "50"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "/games/players?seasonType=both&team=Oregon&year=2025": [
+  {
+   "id": 200,
+   "teams": [
+    {
+     "team": "Oregon",
+     "conference": "Big Ten",
+     "homeAway": "home",
+     "points": 30,
+     "categories": [
+      {
+       "name": "receiving",
+       "types": [
+        {
+         "name": "YDS",
+         "athletes": [
+          {
+           "id": "4870001",
+           "name": "x",
+           "stat": "50"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 201,
+   "teams": [
+    {
+     "team": "Oregon",
+     "conference": "Big Ten",
+     "homeAway": "home",
+     "points": 30,
+     "categories": [
+      {
+       "name": "receiving",
+       "types": [
+        {
+         "name": "YDS",
+         "athletes": [
+          {
+           "id": "4870001",
+           "name": "x",
+           "stat": "50"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 202,
+   "teams": [
+    {
+     "team": "Oregon",
+     "conference": "Big Ten",
+     "homeAway": "home",
+     "points": 30,
+     "categories": [
+      {
+       "name": "receiving",
+       "types": [
+        {
+         "name": "YDS",
+         "athletes": [
+          {
+           "id": "4870001",
+           "name": "x",
+           "stat": "50"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 203,
+   "teams": [
+    {
+     "team": "Oregon",
+     "conference": "Big Ten",
+     "homeAway": "home",
+     "points": 30,
+     "categories": [
+      {
+       "name": "receiving",
+       "types": [
+        {
+         "name": "YDS",
+         "athletes": [
+          {
+           "id": "4870001",
+           "name": "x",
+           "stat": "50"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 204,
+   "teams": [
+    {
+     "team": "Oregon",
+     "conference": "Big Ten",
+     "homeAway": "home",
+     "points": 30,
+     "categories": [
+      {
+       "name": "receiving",
+       "types": [
+        {
+         "name": "YDS",
+         "athletes": [
+          {
+           "id": "4870001",
+           "name": "x",
+           "stat": "50"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 205,
+   "teams": [
+    {
+     "team": "Oregon",
+     "conference": "Big Ten",
+     "homeAway": "home",
+     "points": 30,
+     "categories": [
+      {
+       "name": "receiving",
+       "types": [
+        {
+         "name": "YDS",
+         "athletes": [
+          {
+           "id": "4870001",
+           "name": "x",
+           "stat": "50"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 206,
+   "teams": [
+    {
+     "team": "Oregon",
+     "conference": "Big Ten",
+     "homeAway": "home",
+     "points": 30,
+     "categories": [
+      {
+       "name": "receiving",
+       "types": [
+        {
+         "name": "YDS",
+         "athletes": [
+          {
+           "id": "4870001",
+           "name": "x",
+           "stat": "50"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 207,
+   "teams": [
+    {
+     "team": "Oregon",
+     "conference": "Big Ten",
+     "homeAway": "home",
+     "points": 30,
+     "categories": [
+      {
+       "name": "receiving",
+       "types": [
+        {
+         "name": "YDS",
+         "athletes": [
+          {
+           "id": "4870001",
+           "name": "x",
+           "stat": "50"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 208,
+   "teams": [
+    {
+     "team": "Oregon",
+     "conference": "Big Ten",
+     "homeAway": "home",
+     "points": 30,
+     "categories": [
+      {
+       "name": "receiving",
+       "types": [
+        {
+         "name": "YDS",
+         "athletes": [
+          {
+           "id": "4870001",
+           "name": "x",
+           "stat": "50"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 209,
+   "teams": [
+    {
+     "team": "Oregon",
+     "conference": "Big Ten",
+     "homeAway": "home",
+     "points": 30,
+     "categories": [
+      {
+       "name": "receiving",
+       "types": [
+        {
+         "name": "YDS",
+         "athletes": [
+          {
+           "id": "4870001",
+           "name": "x",
+           "stat": "50"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 210,
+   "teams": [
+    {
+     "team": "Oregon",
+     "conference": "Big Ten",
+     "homeAway": "home",
+     "points": 30,
+     "categories": [
+      {
+       "name": "receiving",
+       "types": [
+        {
+         "name": "YDS",
+         "athletes": [
+          {
+           "id": "4870001",
+           "name": "x",
+           "stat": "50"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 211,
+   "teams": [
+    {
+     "team": "Oregon",
+     "conference": "Big Ten",
+     "homeAway": "home",
+     "points": 30,
+     "categories": [
+      {
+       "name": "receiving",
+       "types": [
+        {
+         "name": "YDS",
+         "athletes": [
+          {
+           "id": "4870001",
+           "name": "x",
+           "stat": "50"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 212,
+   "teams": [
+    {
+     "team": "Oregon",
+     "conference": "Big Ten",
+     "homeAway": "home",
+     "points": 30,
+     "categories": [
+      {
+       "name": "receiving",
+       "types": [
+        {
+         "name": "YDS",
+         "athletes": [
+          {
+           "id": "4870001",
+           "name": "x",
+           "stat": "50"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "/ppa/players/season?excludeGarbageTime=true&team=Ohio State&year=2024": [
+  {
+   "season": 2024,
+   "id": "4870001",
+   "name": "Test Receiver",
+   "position": "WR",
+   "team": "Ohio State",
+   "conference": "Big Ten",
+   "averagePPA": {
+    "all": 0.45,
+    "pass": 0.45
+   },
+   "totalPPA": {
+    "all": 18
+   }
+  }
+ ],
+ "/ppa/players/season?excludeGarbageTime=true&team=Oregon&year=2025": [
+  {
+   "season": 2025,
+   "id": "4870001",
+   "name": "Test Receiver",
+   "position": "WR",
+   "team": "Oregon",
+   "conference": "Big Ten",
+   "averagePPA": {
+    "all": 0.62,
+    "pass": 0.63,
+    "rush": 0.2
+   },
+   "totalPPA": {
+    "all": 55
+   }
+  }
+ ],
+ "/recruiting/players?classification=HighSchool&team=Ohio State&year=2024": [
+  {
+   "id": "r1",
+   "athleteId": "4870001",
+   "recruitType": "HighSchool",
+   "year": 2024,
+   "ranking": 25,
+   "name": "Test Receiver",
+   "school": "Test High",
+   "committedTo": "Ohio State",
+   "position": "WR",
+   "height": 73,
+   "weight": 190,
+   "stars": 4,
+   "rating": 0.9712,
+   "city": "Dallas",
+   "stateProvince": "TX",
+   "country": "USA",
+   "hometownInfo": {
+    "fipsCode": null,
+    "latitude": null,
+    "longitude": null
+   }
+  }
+ ],
+ "/recruiting/players?classification=HighSchool&position=WR&year=2024": [
+  {
+   "id": "r0",
+   "athleteId": "1",
+   "recruitType": "HighSchool",
+   "year": 2024,
+   "ranking": 1,
+   "name": "Top Wideout",
+   "school": "Test High",
+   "committedTo": "Ohio State",
+   "position": "WR",
+   "height": 73,
+   "weight": 190,
+   "stars": 5,
+   "rating": 0.999,
+   "city": "Dallas",
+   "stateProvince": "TX",
+   "country": "USA",
+   "hometownInfo": {
+    "fipsCode": null,
+    "latitude": null,
+    "longitude": null
+   }
+  },
+  {
+   "id": "r9",
+   "athleteId": "2",
+   "recruitType": "HighSchool",
+   "year": 2024,
+   "ranking": 12,
+   "name": "Another Wideout",
+   "school": "Test High",
+   "committedTo": "Ohio State",
+   "position": "WR",
+   "height": 73,
+   "weight": 190,
+   "stars": 5,
+   "rating": 0.98,
+   "city": "Dallas",
+   "stateProvince": "TX",
+   "country": "USA",
+   "hometownInfo": {
+    "fipsCode": null,
+    "latitude": null,
+    "longitude": null
+   }
+  },
+  {
+   "id": "r1",
+   "athleteId": "4870001",
+   "recruitType": "HighSchool",
+   "year": 2024,
+   "ranking": 25,
+   "name": "Test Receiver",
+   "school": "Test High",
+   "committedTo": "Ohio State",
+   "position": "WR",
+   "height": 73,
+   "weight": 190,
+   "stars": 4,
+   "rating": 0.9712,
+   "city": "Dallas",
+   "stateProvince": "TX",
+   "country": "USA",
+   "hometownInfo": {
+    "fipsCode": null,
+    "latitude": null,
+    "longitude": null
+   }
+  },
+  {
+   "id": "r5",
+   "athleteId": "5",
+   "recruitType": "HighSchool",
+   "year": 2024,
+   "ranking": 200,
+   "name": "Lower Wideout",
+   "school": "Test High",
+   "committedTo": "Ohio State",
+   "position": "WR",
+   "height": 73,
+   "weight": 190,
+   "stars": 3,
+   "rating": 0.9,
+   "city": "Dallas",
+   "stateProvince": "TX",
+   "country": "USA",
+   "hometownInfo": {
+    "fipsCode": null,
+    "latitude": null,
+    "longitude": null
+   }
+  }
+ ],
+ "/teams/fbs?year=2025": [
+  {
+   "id": 1,
+   "school": "Ohio State",
+   "conference": "Big Ten",
+   "abbreviation": "OHI",
+   "logos": []
+  },
+  {
+   "id": 2,
+   "school": "Oregon",
+   "conference": "Big Ten",
+   "abbreviation": "ORE",
+   "logos": []
+  },
+  {
+   "id": 3,
+   "school": "Michigan",
+   "conference": "Big Ten",
+   "abbreviation": "MIC",
+   "logos": []
+  }
+ ]
+}

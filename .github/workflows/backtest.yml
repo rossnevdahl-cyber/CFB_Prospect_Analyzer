@@ -1,0 +1,32 @@
+name: backtest
+
+on:
+  workflow_dispatch:
+    inputs:
+      exclude_recent:
+        description: "Leave out the most recent N draft classes (incomplete outcomes)"
+        default: "2"
+
+permissions:
+  contents: write
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm backtest --exclude-recent ${{ inputs.exclude_recent }}
+      - name: Commit results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/backtest.md
+          git diff --cached --quiet || (git commit -m "Backtest results" && git push)

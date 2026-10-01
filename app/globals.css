@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f6f7f9;
+  --surface: #ffffff;
+  --foreground: #111827;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --accent: #1d4ed8;
+  --accent-fg: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0b0f17;
+    --surface: #121826;
+    --foreground: #e5e7eb;
+    --muted: #9ca3af;
+    --border: #273042;
+    --accent: #3b82f6;
+    --accent-fg: #ffffff;
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+@layer components {
+  .card {
+    @apply rounded-xl border border-border bg-surface shadow-sm;
+  }
+  .card-title {
+    @apply mb-3 text-base font-semibold tracking-tight;
+  }
+  .label {
+    @apply text-xs font-medium uppercase tracking-wide text-muted;
+  }
+  .input {
+    @apply w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-1 rounded-lg border border-border bg-surface px-3 py-1.5 text-sm font-medium hover:bg-background disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50;
+  }
+  .btn-sm {
+    @apply rounded-md border border-border px-2 py-0.5 text-xs hover:bg-background disabled:opacity-40;
+  }
+  .data-table {
+    @apply w-full border-collapse text-sm;
+  }
+  .data-table th {
+    @apply border-b border-border px-2 py-1.5 text-xs font-semibold uppercase tracking-wide whitespace-nowrap text-muted;
+  }
+  .data-table td {
+    @apply border-b border-border/60 px-2 py-1.5 whitespace-nowrap tabular-nums;
+  }
+  .pill {
+    @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold;
+  }
+  .prose-note p {
+    @apply mb-2;
+  }
+  .prose-note ul {
+    @apply mb-2 list-disc pl-5;
+  }
+  .prose-note ol {
+    @apply mb-2 list-decimal pl-5;
+  }
+  .prose-note a {
+    @apply text-accent underline;
+  }
+  .prose-note code {
+    @apply rounded bg-background px-1;
+  }
+}
