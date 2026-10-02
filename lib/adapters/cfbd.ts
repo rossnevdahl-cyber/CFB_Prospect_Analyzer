@@ -37,9 +37,39 @@ export type CfbdOptions = {
   fetch?: (request: Request) => Promise<Response>;
   season?: number;
   refresh?: boolean;
+  /** Max CFBD requests in flight from this adapter. CFBD rejects concurrent calls to one endpoint. */
+  concurrency?: number;
+  /** Backoff before each retry of a rate-limited call, in ms. */
+  retryDelaysMs?: number[];
 };
 
-type Call<T> = () => Promise<{ data?: T; error?: unknown }>;
+type Call<T> = () => Promise<{ data?: T; error?: unknown; response?: Response }>;
+
+const DEFAULT_RETRY_DELAYS_MS = [1000, 2000, 4000, 8000, 16000];
+
+/** CFBD pushback: HTTP 429, or its "Too many concurrent requests" message. */
+export function isRateLimited(res: { error?: unknown; response?: Response }): boolean {
+  if (res.response?.status === 429) return true;
+  return /too many/i.test(JSON.stringify(res.error ?? ""));
+}
+
+/** Runs at most `limit` tasks at once; the rest wait in FIFO order. */
+export class Limiter {
+  private active = 0;
+  private queue: (() => void)[] = [];
+  constructor(private limit: number) {}
+
+  async run<T>(task: () => Promise<T>): Promise<T> {
+    if (this.active >= this.limit) await new Promise<void>((resolve) => this.queue.push(resolve));
+    this.active++;
+    try {
+      return await task();
+    } finally {
+      this.active--;
+      this.queue.shift()?.();
+    }
+  }
+}
 
 /**
  * CollegeFootballData adapter. Every call goes through the cache: current-season data expires
@@ -51,9 +81,11 @@ export class CfbdAdapter {
   private calls = 0;
   private hits = 0;
   private latestFetch: Date | null = null;
+  private limiter: Limiter;
 
   constructor(private opts: CfbdOptions) {
     this.season = opts.season ?? currentSeason();
+    this.limiter = new Limiter(opts.concurrency ?? 2);
     client.setConfig({
       baseUrl: "https://api.collegefootballdata.com",
       headers: opts.apiKey ? { Authorization: `Bearer ${opts.apiKey}` } : {},
@@ -77,7 +109,7 @@ export class CfbdAdapter {
       ttl,
       async () => {
         if (!this.opts.apiKey && !this.opts.fetch) throw new Error("CFBD_API_KEY is not set");
-        const res = await call();
+        const res = await this.request(call);
         if (res.error || res.data === undefined) {
           throw new Error(`CFBD ${key} failed: ${JSON.stringify(res.error ?? "no data")}`);
         }
@@ -89,6 +121,16 @@ export class CfbdAdapter {
     if (r.hit) this.hits++;
     if (!this.latestFetch || r.fetchedAt > this.latestFetch) this.latestFetch = r.fetchedAt;
     return r.value;
+  }
+
+  /** One live request: limited concurrency, retried with backoff while CFBD says it is too busy. */
+  private async request<T>(call: Call<T>): Promise<Awaited<ReturnType<Call<T>>>> {
+    const delays = this.opts.retryDelaysMs ?? DEFAULT_RETRY_DELAYS_MS;
+    for (let attempt = 0; ; attempt++) {
+      const res = await this.limiter.run(call);
+      if (!isRateLimited(res) || attempt >= delays.length) return res;
+      await new Promise((r) => setTimeout(r, delays[attempt]));
+    }
   }
 
   fbsTeams(year = this.season): Promise<Team[]> {
