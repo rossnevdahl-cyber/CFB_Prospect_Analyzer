@@ -22,15 +22,37 @@ Defaults: full PPR, superflex, 5-pt passing TDs (`config/grading.yaml`).
 
 Every page and API route sits behind `APP_PASSWORD` (`proxy.ts`, Next 16's renamed middleware).
 
-## Setup (Phase 0)
+## Deployment
 
-1. **Neon:** add Neon Postgres from the Vercel Marketplace; copy the *pooled* connection string.
-2. **Secrets** — set in Vercel (Production + Preview) and in GitHub → Settings → Secrets → Actions:
-   `DATABASE_URL`, `CFBD_API_KEY`, `YOUTUBE_API_KEY`, `APP_PASSWORD`.
-3. **Schema:** `DATABASE_URL=… pnpm db:migrate` (the GitHub jobs also migrate before running).
-4. **Rosters:** run the `sync-rosters` workflow once with *backfill* checked (last 6 seasons), then it runs nightly in season and weekly otherwise.
-5. **History:** run `update-history` (≈ 300 CFBD calls the first time; past seasons are cached forever). It writes `docs/data-coverage.md` — coverage depth and the CFBD ↔ nflverse ID match rate.
-6. **Backtest:** run `backtest` to write `docs/backtest.md`.
+Production deploys from `main` on Vercel; every other branch gets a preview deploy. GitHub only
+lets you run a workflow by hand once it is on `main`.
+
+### Secrets
+
+| Secret | Vercel (Production + Preview) | GitHub Actions |
+| --- | :---: | :---: |
+| `DATABASE_URL` | ✓ (added by the Neon integration) | ✓ |
+| `CFBD_API_KEY` | ✓ | ✓ |
+| `YOUTUBE_API_KEY` | ✓ | — |
+| `APP_PASSWORD` | ✓ | — |
+
+- **Neon:** Vercel project → **Storage** → **Create Database** → *Neon Serverless Postgres*. It adds `DATABASE_URL` to the project.
+  For GitHub, copy the same value, or use the pooled string (host contains `-pooler`) from Neon → **Connect**.
+  The Auth URL and JWKS URL on the Neon page are for Neon Auth and are not used here.
+- New Vercel variables only reach new deploys, so redeploy after changing them.
+
+### Data jobs (GitHub Actions)
+
+| Workflow | When | What it does |
+| --- | --- | --- |
+| `sync-rosters` | Nightly Aug–Jan, weekly Feb–Jul, or by hand (*backfill* for the first run) | FBS teams and rosters for the last 6 seasons; feeds search. |
+| `update-history` | May 15, or by hand | Rebuilds the history table from CFBD + nflverse and commits `docs/data-coverage.md`. ≈ 300 CFBD calls the first time; past seasons are cached forever, so re-runs are nearly free. |
+| `backtest` | By hand | Grades every drafted player as of their final college season, correlates with NFL years 1–3 PPG, commits `docs/backtest.md`. |
+| `tune-weights` | By hand | Searches weights on older draft classes, checks them on newer ones, commits `docs/weight-tuning.md`. Never edits the config. |
+| `ci` | Every PR and push to `main` | Lint, type check, tests. |
+
+All jobs run migrations first. CFBD rejects concurrent calls to one endpoint, so the adapter caps
+requests in flight (2 for the app, 1 for jobs) and retries throttled calls with backoff.
 
 ### Local development
 
@@ -65,6 +87,26 @@ render page + markdown from one object     lib/report/build.ts, components/repor
 - **Fantasy outcome** = NFL years 1–3 PPG under `scoring` in the config.
 
 Edit `config/grading.yaml` on GitHub → Vercel redeploys → new weights, thresholds and tier cutoffs, no code change.
+Reports recompute the grade when opened; big-board rows show the grade from each player's last report.
+
+### Current weights and how they were checked
+
+QB and RB weights were re-tuned (`tune-weights`, classes through 2018, checked on 2019–2024); WR and
+TE keep the spec weights because their tuned versions did worse on the held-out classes. Draft capital
+was held fixed: the backtest scores it with actual picks, while current prospects only have projections.
+
+Backtest, draft classes through 2024 (Spearman ρ with NFL years 1–3 PPG, busts counted as zero):
+
+| Pos | Players | Grade | Draft pick alone |
+| --- | ---: | ---: | ---: |
+| QB | 221 | 0.581 | 0.641 |
+| RB | 424 | 0.582 | 0.598 |
+| WR | 614 | 0.539 | 0.573 |
+| TE | 272 | 0.537 | 0.644 |
+
+Draft capital is the strongest single component everywhere; production and (for WRs) age/breakout add
+signal; CFBD-only efficiency is near noise for WR/TE until PFF history exists. Details in
+`docs/backtest.md` and `docs/weight-tuning.md`.
 
 ## Data sources
 
@@ -76,6 +118,12 @@ Edit `config/grading.yaml` on GitHub → Vercel redeploys → new weights, thres
 | Big boards / ADP | `rankingsCsv.ts`, `adpCsv.ts` | CSV upload in v1. |
 | YouTube Data API v3 | `lib/adapters/youtube.ts` | 2 searches (200 units) + 1 `videos.list` per uncached report ≈ 49 reports/day on the free quota; cached 7 days per player. Pin/hide/paste overrides persist across refreshes. |
 | Birthdates | `data/overrides/birthdates.csv` | `cfbd_id,name,birthdate,source` for current players; nflverse for drafted ones. |
+
+**History coverage** (draft classes 2006–2026, from `docs/data-coverage.md`): 1,697 drafted QB/RB/WR/TE;
+98.8% carry a CFBD id and 100% join to nflverse; 74.7% have CFBD college stats and 64.2% have a full
+career (eligible as comps); birthdates 98.2%, combine 87.2%, recruiting composite 64.4%, NFL PPG 78.4%.
+CFBD player stats are sparse before 2009, so the 2006–2009 classes have none and only careers starting
+in 2009 or later count as comps.
 
 **CFBD call budget.** An uncached report costs roughly 3 calls per college season (stats, game box
 scores, PPA) plus 4 season-wide calls per year (shared across all players) and 1–3 recruiting calls.
@@ -97,13 +145,16 @@ end-to-end report build including the fully cached path and markdown section ord
 
 | Phase | State |
 | --- | --- |
-| 0 Setup and spike | Code ready; needs Vercel/Neon/secrets. `docs/data-coverage.md` is produced by the first `update-history` run. |
-| 1 Core report | Done. Cached rebuild ≈ 20 ms locally; uncached depends on CFBD latency (calls run in parallel). |
-| 2 History and metrics | Done (`update-history`, combine, dominator, breakout, athletic score). |
-| 3 Grade and comps | Done, config-driven; `backtest` workflow. |
-| 4 Notes and boards | Done. |
-| 5 Imports | Done. |
-| 6 Video links | Done; needs `YOUTUBE_API_KEY` to verify the 8-of-10 acceptance check on live data. |
+| 0 Setup and spike | ✅ Live on Vercel behind the password with Neon; coverage and match rates in `docs/data-coverage.md`. |
+| 1 Core report | ✅ Verified on production with live CFBD data. Cached rebuild ≈ 20 ms. |
+| 2 History and metrics | ✅ 1,697 drafted players; derived metrics match hand calculations in tests. |
+| 3 Grade and comps | ✅ Config-driven; backtest and weight tuning run on production data. |
+| 4 Notes and boards | ✅ 40-player reorder, position views, phone controls and snapshot reload tested in a browser. |
+| 5 Imports | ✅ PFF, big board and ADP uploads fill the next report (browser-tested). Awaiting first real files. |
+| 6 Video links | ✅ Spot-checked on production: the videos shown were the right players. |
+
+**Remaining:** replace the hand-built CFBD test fixture with recorded responses
+(`pnpm record:fixtures`), and add birthdates for current players so breakout age can be scored.
 
 ## Open questions (from the spec)
 
