@@ -23,7 +23,7 @@ import {
   type NflSeasonRow,
 } from "../lib/adapters/nflverse";
 import { loadGradingConfig } from "../lib/config";
-import { computeHistoryPlayer, draftPosition } from "../lib/history";
+import { computeHistoryPlayer, draftPosition, findRecruit } from "../lib/history";
 import { normalizeName, normalizeSchool } from "../lib/names";
 import { applyPpa, buildTeamSeason, playerSeasonsFromStats } from "../lib/normalize";
 import { POSITIONS, type Position, type SeasonStats, type TeamSeason } from "../lib/types";
@@ -115,11 +115,9 @@ async function main() {
     return seasonMemo.get(year)!;
   };
 
-  const recruitMemo = new Map<number, Promise<Map<string, Recruit>>>();
+  const recruitMemo = new Map<number, Promise<Recruit[]>>();
   const loadRecruits = (year: number) => {
-    if (!recruitMemo.has(year)) {
-      recruitMemo.set(year, cfbd.recruits(year).then((rs) => new Map(rs.filter((r) => r.athleteId).map((r) => [String(r.athleteId), r]))).catch(() => new Map()));
-    }
+    if (!recruitMemo.has(year)) recruitMemo.set(year, cfbd.recruits(year).catch(() => [] as Recruit[]));
     return recruitMemo.get(year)!;
   };
 
@@ -167,14 +165,13 @@ async function main() {
       if (cmb) coverage.combine++;
 
       let recruitRating: number | null = null;
-      if (cfbdId) {
-        const firstSeason = stats.length ? Math.min(...stats.map((s) => s.season)) : year - 4;
-        for (const y of [firstSeason, firstSeason - 1, firstSeason + 1]) {
-          const r = (await loadRecruits(y)).get(cfbdId);
-          if (r) {
-            recruitRating = r.rating;
-            break;
-          }
+      const firstSeason = stats.length ? Math.min(...stats.map((s) => s.season)) : year - 4;
+      const schools = [...new Set([...stats.map((s) => s.team), pick.collegeTeam])];
+      for (const y of [firstSeason, firstSeason - 1, firstSeason + 1]) {
+        const r = findRecruit(await loadRecruits(y), { cfbdId, name: pick.name, schools });
+        if (r) {
+          recruitRating = r.rating;
+          break;
         }
       }
       if (recruitRating != null) coverage.recruit++;
