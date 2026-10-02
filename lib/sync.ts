@@ -30,9 +30,24 @@ export function rosterRow(r: RosterPlayer, season: number) {
   };
 }
 
+/**
+ * One row per player per season. CFBD's roster feed can list a player twice in a season
+ * (e.g. a mid-season move); Postgres rejects an upsert that touches the same key twice, so the
+ * last entry wins.
+ */
+export function rosterRowsForSeason(rows: RosterPlayer[], season: number) {
+  const byId = new Map<string, ReturnType<typeof rosterRow>>();
+  for (const r of rows) {
+    if (!r.id || r.firstName == null) continue;
+    const row = rosterRow(r, season);
+    byId.set(row.cfbdId, row);
+  }
+  return [...byId.values()];
+}
+
 export async function upsertRoster(rows: RosterPlayer[], season: number): Promise<number> {
   const db = getDb();
-  const values = rows.filter((r) => r.id && r.firstName != null).map((r) => rosterRow(r, season));
+  const values = rosterRowsForSeason(rows, season);
   for (let i = 0; i < values.length; i += 500) {
     await db
       .insert(rosterPlayers)
