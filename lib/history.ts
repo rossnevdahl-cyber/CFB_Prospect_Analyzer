@@ -5,6 +5,8 @@ import { ppgYears1to3, type NflSeason } from "./fantasy";
 import { fmtInt, fmtPct } from "./format";
 import { extractFeatures, type FeatureVector } from "./grading";
 import { buildCareerProfile, type CareerProfile } from "./metrics";
+import type { Recruit } from "cfbd";
+import { normalizeName, normalizeSchool } from "./names";
 import { estimateSacks } from "./normalize";
 import type { Combine, Position, SeasonStats, TeamSeason } from "./types";
 
@@ -33,6 +35,21 @@ export function collegeLine(position: Position, stats: SeasonStats[], profile: C
     default:
       return `${head}: ${s.rec}-${fmtInt(s.recYds)}-${s.recTd}, ${fmtPct(d?.dominator, 0)} dominator`;
   }
+}
+
+/**
+ * A drafted player's high-school recruiting record: by CFBD athlete id when the record carries one,
+ * otherwise by name plus a school he played for (older records often lack the id).
+ */
+export function findRecruit(recruits: Recruit[], p: { cfbdId: string | null; name: string; schools: string[] }): Recruit | null {
+  if (p.cfbdId) {
+    const byId = recruits.find((r) => r.athleteId != null && String(r.athleteId) === p.cfbdId);
+    if (byId) return byId;
+  }
+  const name = normalizeName(p.name);
+  const schools = new Set(p.schools.map(normalizeSchool));
+  const hits = recruits.filter((r) => normalizeName(r.name) === name && schools.has(normalizeSchool(r.committedTo)));
+  return hits.length === 1 ? hits[0] : null;
 }
 
 export type HistoryInput = {

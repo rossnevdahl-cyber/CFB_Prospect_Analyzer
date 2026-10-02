@@ -3,7 +3,7 @@ import { parseCombine, parseDraftPicks, parsePlayers, parseSeasonStats } from "@
 import { backtestMarkdown, runBacktest } from "@/lib/backtest";
 import { parseGradingConfig } from "@/lib/config";
 import { fantasyPoints, ppgYears1to3 } from "@/lib/fantasy";
-import { computeHistoryPlayer, draftPosition, pearson, spearman } from "@/lib/history";
+import { computeHistoryPlayer, draftPosition, findRecruit, pearson, spearman } from "@/lib/history";
 import { seasonStatsSchema, teamSeasonSchema } from "@/lib/types";
 import fs from "node:fs";
 import path from "node:path";
@@ -79,5 +79,21 @@ describe("history and backtest", () => {
     expect(wr.spearman!).toBeGreaterThan(0.5);
     expect(rows.find((r) => r.position === "QB")!.n).toBe(0);
     expect(backtestMarkdown(rows, { generated: "x", configNote: "", excluded: "" })).toContain("| WR | 150 |");
+  });
+});
+
+describe("findRecruit", () => {
+  const rec = (id: string, athleteId: string | null, name: string, committedTo: string, rating: number) =>
+    ({ id, athleteId, name, committedTo, rating, year: 2017, recruitType: "HighSchool" }) as unknown as import("cfbd").Recruit;
+  const pool = [rec("1", null, "Ja'Marr Chase", "LSU", 0.9), rec("2", null, "Michael Thomas", "Ohio State", 0.88), rec("3", null, "Michael Thomas", "USC", 0.8), rec("4", "555", "Other Guy", "Texas", 0.7)];
+  it("matches by athlete id first", () => {
+    expect(findRecruit(pool, { cfbdId: "555", name: "Nope", schools: [] })?.id).toBe("4");
+  });
+  it("falls back to name plus a school he played for", () => {
+    expect(findRecruit(pool, { cfbdId: "9", name: "JaMarr Chase", schools: ["LSU"] })?.id).toBe("1");
+    expect(findRecruit(pool, { cfbdId: null, name: "Michael Thomas", schools: ["Ohio State"] })?.id).toBe("2");
+  });
+  it("does not guess when the school does not match", () => {
+    expect(findRecruit(pool, { cfbdId: null, name: "Michael Thomas", schools: ["Alabama"] })).toBeNull();
   });
 });
