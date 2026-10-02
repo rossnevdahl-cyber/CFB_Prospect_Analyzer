@@ -15,7 +15,8 @@
     "sync:rosters": "tsx --env-file-if-exists=.env.local scripts/syncRosters.ts",
     "update:history": "tsx --env-file-if-exists=.env.local scripts/updateHistory.ts",
     "backtest": "tsx --env-file-if-exists=.env.local scripts/backtest.ts",
-    "record:fixtures": "tsx --env-file-if-exists=.env.local scripts/recordFixtures.ts"
+    "record:fixtures": "tsx --env-file-if-exists=.env.local scripts/recordFixtures.ts",
+    "tune:weights": "tsx --env-file-if-exists=.env.local scripts/tuneWeights.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

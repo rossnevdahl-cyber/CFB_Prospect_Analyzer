@@ -1,0 +1,35 @@
+name: tune-weights
+
+on:
+  workflow_dispatch:
+    inputs:
+      exclude_recent:
+        description: "Leave out the most recent N draft classes (incomplete outcomes)"
+        default: "2"
+      train_through:
+        description: "Last draft class used to search weights (later classes check them)"
+        default: "2018"
+
+permissions:
+  contents: write
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm tune:weights --exclude-recent ${{ inputs.exclude_recent }} --train-through ${{ inputs.train_through }}
+      - name: Commit results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/weight-tuning.md
+          git diff --cached --quiet || (git commit -m "Weight tuning results" && git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}")
