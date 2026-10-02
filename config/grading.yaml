@@ -1,5 +1,7 @@
 # Composite grade configuration. Edit on GitHub; Vercel redeploys with the new values.
 # Weights per position do not need to sum to 1 — they are normalized at runtime.
+# QB and RB were re-tuned on draft classes through 2018 and validated on 2019–2024 (docs/weight-tuning.md);
+# WR and TE keep the spec weights because tuned versions did worse on the held-out classes.
 scoring:
   ppr: 1.0          # points per reception
   pass_td: 5        # points per passing TD
@@ -12,9 +14,9 @@ scoring:
   superflex: true
 weights:
   WR: {production: 0.30, efficiency: 0.15, age_breakout: 0.20, athleticism: 0.10, draft_capital: 0.15, pedigree: 0.05, context: 0.05}
-  RB: {production: 0.25, efficiency: 0.20, age_breakout: 0.10, athleticism: 0.15, draft_capital: 0.20, pedigree: 0.05, context: 0.05}
+  RB: {production: 0.35, efficiency: 0.15, age_breakout: 0.05, athleticism: 0.10, draft_capital: 0.20, pedigree: 0.05, context: 0.10}
   TE: {production: 0.25, efficiency: 0.15, age_breakout: 0.15, athleticism: 0.20, draft_capital: 0.15, pedigree: 0.05, context: 0.05}
-  QB: {production: 0.20, efficiency: 0.30, age_breakout: 0.05, athleticism: 0.15, draft_capital: 0.20, pedigree: 0.05, context: 0.05}
+  QB: {production: 0.35, efficiency: 0.20, age_breakout: 0.05, athleticism: 0.05, draft_capital: 0.20, pedigree: 0.05, context: 0.10}
 breakout_threshold: {WR: 0.20, TE: 0.15, RB: 0.15}
 tiers: {Elite: 85, Starter: 70, Flex: 55, Dart: 40}
 comps: {count: 5, min_similarity: 0.60}
