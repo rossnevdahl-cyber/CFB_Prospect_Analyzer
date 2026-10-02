@@ -4,8 +4,8 @@ _Generated 2026-10-02. Weights from config/grading.yaml at this commit. Draft cl
 
 | Position | Players graded | Pearson r | Spearman ρ | Draft-pick-only ρ |
 | --- | ---: | ---: | ---: | ---: |
-| QB | 221 | 0.573 | 0.557 | 0.641 |
-| RB | 424 | 0.568 | 0.571 | 0.598 |
+| QB | 221 | 0.587 | 0.581 | 0.641 |
+| RB | 424 | 0.578 | 0.582 | 0.598 |
 | WR | 614 | 0.505 | 0.539 | 0.573 |
 | TE | 272 | 0.526 | 0.537 | 0.644 |
 
