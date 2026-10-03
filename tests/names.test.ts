@@ -56,3 +56,14 @@ describe("prefixMatch (autocomplete)", () => {
     expect(prefixMatch("jex", "Jeremiah Smith")).toBe(false);
   });
 });
+
+describe("school aliases", () => {
+  it("maps ranking-site school names onto CFBD names", () => {
+    expect(normalizeSchool("Mississippi")).toBe(normalizeSchool("Ole Miss"));
+    expect(normalizeSchool("Miami (FL)")).toBe(normalizeSchool("Miami"));
+    expect(normalizeSchool("Miami (OH)")).not.toBe(normalizeSchool("Miami"));
+    expect(normalizeSchool("Hawaii")).toBe(normalizeSchool("Hawai'i"));
+    expect(normalizeSchool("Texas A&M")).toBe(normalizeSchool("Texas A & M"));
+    expect(normalizeSchool("Southern California")).toBe(normalizeSchool("USC"));
+  });
+});

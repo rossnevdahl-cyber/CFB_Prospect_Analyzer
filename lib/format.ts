@@ -58,3 +58,7 @@ export function ordinalRound(r: number | null | undefined): string {
   if (r == null) return "—";
   return `Round ${r}`;
 }
+
+export function fmtLeagueFormat(f: string): string {
+  return f === "1qb" ? "1QB" : f === "superflex" ? "Superflex" : f;
+}

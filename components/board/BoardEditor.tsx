@@ -33,7 +33,9 @@ import {
   type BoardGrades,
   type BoardTier,
 } from "@/lib/boards";
+import { compareBoard, type ConsensusEntry } from "@/lib/consensus";
 import { POSITIONS, type Position } from "@/lib/types";
+import { ConsensusPanel, GapBadge } from "./ConsensusPanel";
 
 type View = "ALL" | Position;
 
@@ -46,6 +48,7 @@ type RowProps = {
   divider: BoardTier | null | "none";
   tiers: BoardTier[];
   grade: { grade: number | null; tier: string | null } | undefined;
+  consensus: { rank: number | null; gap: number | null } | null;
   readOnly: boolean;
   classYear: number;
   onMove: (cfbdId: string, toViewIndex: number) => void;
@@ -90,6 +93,11 @@ function Row(p: RowProps) {
             <span className="text-muted">—</span>
           )}
         </span>
+        {p.consensus && (
+          <span className="w-16 text-right text-xs" title="Consensus rank and gap (consensus − mine)">
+            <span className="text-muted">C</span> <span className="tabular-nums">{p.consensus.rank ?? "—"}</span> <GapBadge gap={p.consensus.gap} />
+          </span>
+        )}
         {!p.readOnly && (
           <>
             <select className="input w-24 px-1 py-0.5 text-xs" value={p.entry.tier ?? ""} onChange={(e) => p.onTier(p.entry.cfbdId, e.target.value || null)} aria-label="My tier">
@@ -198,6 +206,9 @@ export function BoardEditor(props: {
   readOnly: boolean;
   initialView: string;
   snapshotId: number | null;
+  consensus: ConsensusEntry[];
+  sources: { source: string; asOf: string }[];
+  format: string;
 }) {
   const [entries, setEntries] = useState(props.initialEntries);
   const [tiers, setTiers] = useState(props.tiers);
@@ -213,6 +224,10 @@ export function BoardEditor(props: {
   const visible = useMemo(() => (view === "ALL" ? entries : entries.filter((e) => positionOf(e) === view)), [entries, view]);
   const posRanks = useMemo(() => positionRanks(entries), [entries]);
   const overall = useMemo(() => new Map(entries.map((e, i) => [e.cfbdId, i + 1])), [entries]);
+  const comparison = useMemo(
+    () => (props.sources.length ? new Map(compareBoard(entries, props.consensus, view === "ALL" ? null : view).map((c) => [c.cfbdId, { rank: c.consensusRank, gap: c.gap }])) : null),
+    [entries, props.consensus, props.sources.length, view],
+  );
 
   /** Optimistic local update with the same pure function the server applies, then reconcile. */
   const run = (local: BoardEntry[], server: () => Promise<BoardEntry[] | void>) => {
@@ -274,6 +289,7 @@ export function BoardEditor(props: {
                   divider={showDivider ? (tiers.find((t) => t.label === e.tier) ?? null) : "none"}
                   tiers={tiers}
                   grade={props.grades[e.cfbdId]}
+                  consensus={comparison?.get(e.cfbdId) ?? null}
                   readOnly={props.readOnly}
                   classYear={props.classYear}
                   onMove={onMove}
@@ -288,6 +304,7 @@ export function BoardEditor(props: {
           </ol>
         </SortableContext>
       </DndContext>
+      <ConsensusPanel entries={entries} consensus={props.consensus} sources={props.sources} format={props.format} view={view} />
       {!props.readOnly && <TierEditor classYear={props.classYear} tiers={tiers} onSaved={setTiers} />}
     </div>
   );

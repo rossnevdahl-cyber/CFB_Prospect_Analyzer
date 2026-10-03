@@ -77,3 +77,17 @@ describe("40-player board", () => {
     expect(md).toContain("**— Tier 2 —**");
   });
 });
+
+describe("exports with consensus", () => {
+  it("adds consensus rank and gap columns when rankings exist", () => {
+    const c = { p1: { rank: 4, gap: 3 }, p2: { rank: 1, gap: -1 } };
+    const csv = boardToCsv(board.slice(0, 3), {}, c);
+    expect(csv.split("\n")[0]).toBe("rank,pos_rank,player,position,school,my_tier,app_grade,app_tier,consensus_rank,gap");
+    expect(csv.split("\n")[1]).toBe("1,QB1,Player 1,QB,State,Tier 1,,,4,3");
+    expect(csv.split("\n")[3].endsWith(",,")).toBe(true);
+    const md = boardToMarkdown(2027, board.slice(0, 2), {}, undefined, c);
+    expect(md).toContain("| App tier | Consensus | Gap |");
+    expect(md).toContain("| 4 | +3 |");
+    expect(md).toContain("| 1 | -1 |");
+  });
+});

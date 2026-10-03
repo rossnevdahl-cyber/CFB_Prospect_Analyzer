@@ -1,6 +1,6 @@
 import { DRILL_LABELS, COMPONENT_LABELS } from "./types";
 import { featureDefs } from "./grading";
-import { fmtAge, fmtDate, fmtDuration, fmtFeature, fmtInt, fmtNum, fmtPct, formatHeight } from "./format";
+import { fmtAge, fmtDate, fmtDuration, fmtFeature, fmtInt, fmtLeagueFormat, fmtNum, fmtPct, formatHeight } from "./format";
 import { advancedColumns, statColumns, teamColumns, type Column } from "./report/tables";
 import type { Report } from "./report/types";
 
@@ -111,7 +111,10 @@ export function reportToMarkdown(r: Report, opts: { baseUrl?: string } = {}): st
   // 8. Rankings
   h2("Rankings");
   const rk: string[] = [];
-  for (const b of r.rankings.bigBoard) rk.push(`- NFL big board: #${b.rank}${b.projectedRound ? `, projected round ${b.projectedRound}` : ""} — ${b.source}, ${fmtDate(b.asOf)}`);
+  for (const c of r.rankings.consensus ?? [])
+    rk.push(`- Fantasy rookie consensus (${c.classYear} ${fmtLeagueFormat(c.format)}): #${c.rank}${c.positionRank != null ? `, ${p.position}${c.positionRank}` : ""} — average ${fmtNum(c.average, 1)}, ranked by ${c.rankedBy} of ${c.sources} sources`);
+  for (const f of r.rankings.fantasy ?? []) rk.push(`- ${f.source} (${f.classYear} ${fmtLeagueFormat(f.format)}): #${f.rank}, ${fmtDate(f.asOf)}`);
+  for (const b of r.rankings.bigBoard) rk.push(`- NFL consensus board: #${b.rank}${b.projectedRound ? `, projected round ${b.projectedRound}` : ""} — ${b.source}, ${fmtDate(b.asOf)}`);
   for (const a of r.rankings.adp) rk.push(`- Dynasty rookie ADP (${a.format}): ${fmtNum(a.adp, 1)} — ${a.source}, ${fmtDate(a.asOf)}`);
   if (r.rankings.projectedRound) rk.push(`- Projected round: ${r.rankings.projectedRound}`);
   if (r.rankings.draft) rk.push(`- Drafted: ${r.rankings.draft.year}, round ${r.rankings.draft.round}, pick ${r.rankings.draft.pick}`);

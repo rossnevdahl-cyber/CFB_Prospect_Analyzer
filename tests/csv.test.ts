@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { parseAdpCsv } from "@/lib/adapters/adpCsv";
 import { parsePffCsv } from "@/lib/adapters/pffCsv";
-import { parseBigBoardCsv, roundFromRank } from "@/lib/adapters/rankingsCsv";
 
 describe("PFF CSV", () => {
   it("maps PFF export columns to canonical metrics and uses the form season", () => {
@@ -23,22 +22,6 @@ RB One,UGA,HB,,,,,3.9,55,120.3,2024`;
     expect(rows[0].metrics).toEqual({ pass_grade: 90.2, btt_rate: 6.1, twp_rate: 2, pressure_to_sack_rate: 15.5 });
     expect(rows[0].season).toBe(2024);
     expect(rows[1].metrics).toEqual({ yco_att: 3.9, mtf: 55, elusive_rating: 120.3 });
-  });
-});
-
-describe("big board CSV", () => {
-  it("parses flexible headers and projects rounds", () => {
-    const { rows, issues } = parseBigBoardCsv(`RK,Player,Pos,School,Proj. Round
-1,Arch Manning,QB,Texas,1
-40,Some Guy,WR,Utah,
-,Missing Rank,WR,X,`);
-    expect(rows).toEqual([
-      { playerName: "Arch Manning", position: "QB", school: "Texas", rank: 1, projectedRound: 1 },
-      { playerName: "Some Guy", position: "WR", school: "Utah", rank: 40, projectedRound: null },
-    ]);
-    expect(issues).toHaveLength(1);
-    expect(roundFromRank(40)).toBe(2);
-    expect(roundFromRank(300)).toBe(7);
   });
 });
 

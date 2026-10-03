@@ -86,34 +86,45 @@ export function sameOrder(a: BoardEntry[], b: BoardEntry[]): boolean {
 }
 
 export type BoardGrades = Record<string, { grade: number | null; tier: string | null }>;
+/** Consensus rank and gap (consensus − mine) per player, when fantasy rankings exist. */
+export type BoardConsensus = Record<string, { rank: number | null; gap: number | null }>;
 
 function csvCell(v: string | number | null | undefined): string {
   const s = v == null ? "" : String(v);
   return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 }
 
-export function boardToCsv(entries: BoardEntry[], grades: BoardGrades): string {
+export function boardToCsv(entries: BoardEntry[], grades: BoardGrades, consensus?: BoardConsensus): string {
   const pr = positionRanks(entries);
-  const lines = ["rank,pos_rank,player,position,school,my_tier,app_grade,app_tier"];
+  const lines = [`rank,pos_rank,player,position,school,my_tier,app_grade,app_tier${consensus ? ",consensus_rank,gap" : ""}`];
   entries.forEach((e, i) => {
     const g = grades[e.cfbdId];
-    lines.push([i + 1, pr.get(e.cfbdId), e.name, e.position, e.school, e.tier, g?.grade ?? "", g?.tier ?? ""].map(csvCell).join(","));
+    const c = consensus?.[e.cfbdId];
+    const cells = [i + 1, pr.get(e.cfbdId), e.name, e.position, e.school, e.tier, g?.grade ?? "", g?.tier ?? ""];
+    if (consensus) cells.push(c?.rank ?? "", c?.gap ?? "");
+    lines.push(cells.map(csvCell).join(","));
   });
   return lines.join("\n") + "\n";
 }
 
-export function boardToMarkdown(classYear: number, entries: BoardEntry[], grades: BoardGrades, asOf?: string): string {
+export function boardToMarkdown(classYear: number, entries: BoardEntry[], grades: BoardGrades, asOf?: string, consensus?: BoardConsensus): string {
   const pr = positionRanks(entries);
   const out = [`# ${classYear} big board${asOf ? ` (as of ${asOf})` : ""}`, ""];
   let tier: string | null | undefined;
-  out.push("| # | Pos rk | Player | Pos | School | My tier | App grade | App tier |", "| ---: | :--- | :--- | :--- | :--- | :--- | ---: | :--- |");
+  const extraHead = consensus ? " Consensus | Gap |" : "";
+  const extraSep = consensus ? " ---: | ---: |" : "";
+  const blanks = consensus ? " | |" : "";
+  out.push(`| # | Pos rk | Player | Pos | School | My tier | App grade | App tier |${extraHead}`, `| ---: | :--- | :--- | :--- | :--- | :--- | ---: | :--- |${extraSep}`);
   entries.forEach((e, i) => {
     if (e.tier !== tier) {
       tier = e.tier;
-      if (tier) out.push(`| | | **— ${tier} —** | | | | | |`);
+      if (tier) out.push(`| | | **— ${tier} —** | | | | | |${blanks}`);
     }
     const g = grades[e.cfbdId];
-    out.push(`| ${i + 1} | ${pr.get(e.cfbdId)} | ${e.name} | ${e.position} | ${e.school} | ${e.tier ?? ""} | ${g?.grade ?? "—"} | ${g?.tier ?? "—"} |`);
+    const c = consensus?.[e.cfbdId];
+    const gap = c?.gap == null ? "—" : c.gap > 0 ? `+${c.gap}` : String(c.gap);
+    const extra = consensus ? ` ${c?.rank ?? "—"} | ${gap} |` : "";
+    out.push(`| ${i + 1} | ${pr.get(e.cfbdId)} | ${e.name} | ${e.position} | ${e.school} | ${e.tier ?? ""} | ${g?.grade ?? "—"} | ${g?.tier ?? "—"} |${extra}`);
   });
   return out.join("\n") + "\n";
 }

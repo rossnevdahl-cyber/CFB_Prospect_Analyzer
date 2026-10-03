@@ -3,8 +3,9 @@ import { notFound } from "next/navigation";
 import { BoardEditor } from "@/components/board/BoardEditor";
 import { boardGrades, getBoard, getSnapshot, listBoards, listSnapshots, searchNotes, snapshotAsOf } from "@/lib/boardsRepo";
 import { fmtDate } from "@/lib/format";
+import { consensusFor } from "@/lib/rankings";
 
-type SP = Promise<{ view?: string; snapshot?: string; asOf?: string; q?: string }>;
+type SP = Promise<{ view?: string; snapshot?: string; asOf?: string; q?: string; format?: string }>;
 
 export default async function BoardPage({ params, searchParams }: { params: Promise<{ classYear: string }>; searchParams: SP }) {
   const { classYear: cy } = await params;
@@ -14,13 +15,15 @@ export default async function BoardPage({ params, searchParams }: { params: Prom
   const board = await getBoard(classYear);
   const snapshot = sp.snapshot ? await getSnapshot(classYear, Number(sp.snapshot)) : sp.asOf ? await snapshotAsOf(classYear, sp.asOf) : null;
   const shown = snapshot ? { ...board, entries: snapshot.entries, tiers: snapshot.tiers } : board;
-  const [grades, snapshots, allBoards, noteHits] = await Promise.all([
+  const format = sp.format === "1qb" ? "1qb" : "superflex";
+  const [grades, snapshots, allBoards, noteHits, cons] = await Promise.all([
     boardGrades(shown.entries.map((e) => e.cfbdId)),
     listSnapshots(classYear),
     listBoards(),
     sp.q ? searchNotes(sp.q) : Promise.resolve(null),
+    consensusFor(classYear, format).catch(() => ({ snapshots: [], consensus: [] })),
   ]);
-  const exportQs = snapshot ? `&snapshot=${snapshot.id}` : "";
+  const exportQs = `${snapshot ? `&snapshot=${snapshot.id}` : ""}&rankFormat=${format}`;
 
   return (
     <div className="space-y-4">
@@ -66,6 +69,17 @@ export default async function BoardPage({ params, searchParams }: { params: Prom
             </select>
           </label>
           <button className="btn">Load</button>
+        </form>
+        <form className="flex items-end gap-2">
+          {sp.snapshot && <input type="hidden" name="snapshot" value={sp.snapshot} />}
+          <label>
+            <span className="label">Compare format</span>
+            <select name="format" defaultValue={format} className="input mt-1">
+              <option value="superflex">Superflex</option>
+              <option value="1qb">1QB</option>
+            </select>
+          </label>
+          <button className="btn">Apply</button>
         </form>
         <form className="ml-auto flex items-end gap-2">
           <label>
@@ -113,6 +127,9 @@ export default async function BoardPage({ params, searchParams }: { params: Prom
         readOnly={Boolean(snapshot)}
         initialView={sp.view ?? "ALL"}
         snapshotId={snapshot?.id ?? null}
+        consensus={cons.consensus}
+        sources={cons.snapshots.map((x) => ({ source: x.source, asOf: x.asOf }))}
+        format={format}
       />
     </div>
   );

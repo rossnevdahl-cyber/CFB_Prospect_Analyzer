@@ -2,9 +2,9 @@ import "server-only";
 import { and, eq, inArray } from "drizzle-orm";
 import { parseAdpCsv } from "./adapters/adpCsv";
 import { parsePffCsv } from "./adapters/pffCsv";
-import { parseBigBoardCsv } from "./adapters/rankingsCsv";
+import { RANKING_LIMIT } from "./adapters/rankingsText";
 import { getDb } from "./db";
-import { adpEntries, bigBoardRanks, importLog, pffImports, rosterPlayers } from "./db/schema";
+import { adpEntries, importLog, pffImports, rosterPlayers } from "./db/schema";
 import { normalizeName, normalizeSchool } from "./names";
 import { normalizePosition } from "./types";
 
@@ -38,7 +38,7 @@ export async function matchToRoster(rows: Matchable[]): Promise<(string | null)[
   });
 }
 
-export type ImportResult = { kind: string; rows: number; matched: number; issues: { line: number; message: string }[]; unmatched: string[] };
+export type ImportResult = { kind: string; rows: number; matched: number; issues: { line: number; message: string }[]; unmatched: string[]; total?: number };
 
 export async function importPff(text: string, fileName: string, season: number): Promise<ImportResult> {
   const { rows, issues } = parsePffCsv(text, season);
@@ -69,33 +69,11 @@ export async function importPff(text: string, fileName: string, season: number):
   return log("pff", fileName, rows.map((r) => r.playerName), ids, issues);
 }
 
-export async function importBigBoard(text: string, fileName: string, source: string, asOf: string): Promise<ImportResult> {
-  const { rows, issues } = parseBigBoardCsv(text);
-  const ids = await matchToRoster(rows);
-  const db = getDb();
-  // Re-importing the same source and date replaces that snapshot.
-  await db.delete(bigBoardRanks).where(and(eq(bigBoardRanks.source, source), eq(bigBoardRanks.asOf, asOf)));
-  if (rows.length) {
-    await db.insert(bigBoardRanks).values(
-      rows.map((r, i) => ({
-        cfbdId: ids[i],
-        playerName: r.playerName,
-        nameNorm: normalizeName(r.playerName),
-        school: r.school,
-        schoolNorm: normalizeSchool(r.school),
-        position: r.position,
-        rank: r.rank,
-        projectedRound: r.projectedRound,
-        source,
-        asOf,
-      })),
-    );
-  }
-  return log("bigboard", fileName, rows.map((r) => r.playerName), ids, issues);
-}
-
 export async function importAdp(text: string, fileName: string, source: string, asOf: string, format: string): Promise<ImportResult> {
-  const { rows, issues } = parseAdpCsv(text);
+  const parsed = parseAdpCsv(text);
+  const issues = parsed.issues;
+  // Only the 50 earliest-drafted players, matching the cap on fantasy rookie rankings.
+  const rows = [...parsed.rows].sort((a, b) => a.adp - b.adp).slice(0, RANKING_LIMIT);
   const ids = await matchToRoster(rows);
   const db = getDb();
   await db.delete(adpEntries).where(and(eq(adpEntries.source, source), eq(adpEntries.asOf, asOf), eq(adpEntries.format, format)));
@@ -115,7 +93,7 @@ export async function importAdp(text: string, fileName: string, source: string, 
       })),
     );
   }
-  return log("adp", fileName, rows.map((r) => r.playerName), ids, issues);
+  return { ...(await log("adp", fileName, rows.map((r) => r.playerName), ids, issues)), total: parsed.rows.length };
 }
 
 async function log(kind: string, fileName: string, names: string[], ids: (string | null)[], issues: ImportResult["issues"]): Promise<ImportResult> {
