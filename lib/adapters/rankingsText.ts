@@ -21,6 +21,18 @@ const POSITIONS = new Set(["QB", "RB", "HB", "FB", "WR", "TE", "ATH"]);
 const isPosition = (s: string) => POSITIONS.has(s.trim().toUpperCase());
 const NFL_RANK = /\bBB\s*#\s*(\d+)/i;
 
+/** Only each source's top 50 players are imported. */
+export const RANKING_LIMIT = 50;
+
+/** The best-ranked `limit` rows, in rank order (ties keep their pasted order). */
+export function topRanked<T extends { rank: number }>(rows: T[], limit = RANKING_LIMIT): T[] {
+  return rows
+    .map((r, i) => ({ r, i }))
+    .sort((a, b) => a.r.rank - b.r.rank || a.i - b.i)
+    .slice(0, limit)
+    .map((x) => x.r);
+}
+
 /** Projected round from an NFL big board rank: 32 picks a round, 7 rounds. */
 export function roundFromRank(rank: number): number {
   return Math.min(7, Math.max(1, Math.ceil(rank / 32)));

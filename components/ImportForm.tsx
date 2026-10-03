@@ -46,6 +46,7 @@ export function ImportForm({ kind, title, help, defaultSeason }: { kind: "pff" |
         <div className="text-sm">
           <p>
             Imported {state.result.rows} rows · matched {state.result.matched} to CFBD players.
+            {state.result.total != null && state.result.total > state.result.rows && ` Kept the top ${state.result.rows} of ${state.result.total}.`}
           </p>
           {state.result.unmatched.length > 0 && (
             <details className="mt-1 text-xs text-muted">

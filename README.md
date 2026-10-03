@@ -116,9 +116,9 @@ signal; CFBD-only efficiency is near noise for WR/TE until PFF history exists. D
 | CollegeFootballData | `lib/adapters/cfbd.ts` | Rosters, box scores, game box scores (games played), PPA, team stats, advanced stats, SP+, games (SOS), recruiting, draft picks. |
 | nflverse | `lib/adapters/nflverse.ts` | Draft picks (gsis/pfr ids), combine, birthdates, NFL season stats. Joined to CFBD draft picks by draft year + overall pick. |
 | PFF College | `lib/adapters/pffCsv.ts` | Manual CSV export only — no scraping. |
-| Fantasy rookie rankings | `rankingsText.ts` | Pasted from the source's page (no scraping): `Name, POS, School` lines (Draft Sharks), ranking cards (NFL Mock Draft Database, whose "BB #" NFL board rank also feeds draft capital), or CSV/TSV. Dated snapshots per source, format and class. |
+| Fantasy rookie rankings | `rankingsText.ts` | Top 50 per source, pasted from the source's page (no scraping): `Name, POS, School` lines (Draft Sharks), ranking cards (NFL Mock Draft Database, whose "BB #" NFL board rank also feeds draft capital), or CSV/TSV. Dated snapshots per source, format and class. |
 | Consensus | `lib/consensus.ts` | Average of each source's latest rank; a source that leaves a player off counts as one past its last rank. Ties go to the player more sources rank. |
-| Dynasty rookie ADP | `adpCsv.ts` | CSV upload. |
+| Dynasty rookie ADP | `adpCsv.ts` | CSV upload; the 50 lowest ADPs are kept. |
 | YouTube Data API v3 | `lib/adapters/youtube.ts` | 2 searches (200 units) + 1 `videos.list` per uncached report ≈ 49 reports/day on the free quota; cached 7 days per player. Pin/hide/paste overrides persist across refreshes. |
 | Birthdates | `data/overrides/birthdates.csv` | `cfbd_id,name,birthdate,source` for current players; nflverse for drafted ones. |
 

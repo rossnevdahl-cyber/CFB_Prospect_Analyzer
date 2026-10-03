@@ -1,5 +1,5 @@
 import { and, desc, eq, ilike, inArray, or, sql } from "drizzle-orm";
-import { parseRankingsText, type RankingRow } from "./adapters/rankingsText";
+import { parseRankingsText, RANKING_LIMIT, topRanked, type RankingRow } from "./adapters/rankingsText";
 import { buildConsensus, type ConsensusEntry, type SourceSnapshot } from "./consensus";
 import { getDb } from "./db";
 import { bigBoardRanks, fantasyRankings, importLog, rosterPlayers } from "./db/schema";
@@ -10,7 +10,8 @@ export const RANKING_FORMATS = ["superflex", "1qb"] as const;
 export type RankingFormat = (typeof RANKING_FORMATS)[number];
 
 export type PreviewRow = RankingRow & { match: MatchResult };
-export type Preview = { layout: string; rows: PreviewRow[]; skipped: string[] };
+/** `total` is how many players were read; `rows` holds only the top RANKING_LIMIT of them. */
+export type Preview = { layout: string; rows: PreviewRow[]; skipped: string[]; total: number; limit: number };
 
 /** Roster rows that could match any of the names: exact normalized names plus same-last-name rows. */
 async function rosterCandidates(names: string[]): Promise<RosterRef[]> {
@@ -40,19 +41,20 @@ async function rosterCandidates(names: string[]): Promise<RosterRef[]> {
 /** Parses pasted text and matches every row, without saving anything. */
 export async function previewRankings(text: string): Promise<Preview> {
   const parsed = parseRankingsText(text);
-  const roster = await rosterCandidates(parsed.rows.map((r) => r.name));
+  const top = topRanked(parsed.rows);
+  const roster = await rosterCandidates(top.map((r) => r.name));
   const byLast = new Map<string, RosterRef[]>();
   for (const r of roster) {
     const last = r.nameNorm.split(" ").pop() as string;
     byLast.set(last.slice(0, 5), [...(byLast.get(last.slice(0, 5)) ?? []), r]);
   }
-  const rows = parsed.rows.map((row) => {
+  const rows = top.map((row) => {
     const n = normalizeName(row.name);
     const last = (n.split(" ").pop() ?? "").slice(0, 5);
     const pool = [...roster.filter((r) => r.nameNorm === n), ...(byLast.get(last) ?? [])];
     return { ...row, match: resolveMatch(row, pool) };
   });
-  return { layout: parsed.layout, rows, skipped: parsed.skipped };
+  return { layout: parsed.layout, rows, skipped: parsed.skipped, total: parsed.rows.length, limit: RANKING_LIMIT };
 }
 
 export type SaveRankingsInput = {
@@ -67,7 +69,9 @@ export type SaveRankingsInput = {
  * Saves one dated snapshot. Re-saving the same source, date, format and class replaces it.
  * NFL board ranks that came with the paste (MDDB's "BB #") also feed draft capital.
  */
-export async function saveRankings(input: SaveRankingsInput): Promise<{ saved: number; matched: number; nflRanks: number }> {
+export async function saveRankings(raw: SaveRankingsInput): Promise<{ saved: number; matched: number; nflRanks: number }> {
+  // The cap is enforced here too, whatever the client sends.
+  const input = { ...raw, rows: topRanked(raw.rows) };
   const db = getDb();
   const key = and(
     eq(fantasyRankings.source, input.source),

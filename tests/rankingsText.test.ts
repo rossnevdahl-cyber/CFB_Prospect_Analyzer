@@ -58,3 +58,24 @@ describe("parseRankingsText", () => {
     expect(roundFromRank(500)).toBe(7);
   });
 });
+
+describe("top 50 cap", () => {
+  it("keeps the 50 best ranks in rank order", async () => {
+    const { topRanked, RANKING_LIMIT } = await import("@/lib/adapters/rankingsText");
+    expect(RANKING_LIMIT).toBe(50);
+    const rows = Array.from({ length: 80 }, (_, i) => ({ rank: 80 - i, name: `P${80 - i}` }));
+    const top = topRanked(rows);
+    expect(top).toHaveLength(50);
+    expect(top[0].rank).toBe(1);
+    expect(top.at(-1)!.rank).toBe(50);
+  });
+  it("applies to a full MDDB-style paste of 364 players", async () => {
+    const { topRanked } = await import("@/lib/adapters/rankingsText");
+    const cards = Array.from({ length: 364 }, (_, i) => `${i + 1}\nPlayer ${i + 1}\nWR\nState\nUDFA\nBB #${i + 3}`).join("\n");
+    const parsed = parseRankingsText(cards);
+    expect(parsed.rows).toHaveLength(364);
+    const kept = topRanked(parsed.rows);
+    expect(kept).toHaveLength(50);
+    expect(kept.at(-1)).toMatchObject({ rank: 50, name: "Player 50", nflRank: 52 });
+  });
+});

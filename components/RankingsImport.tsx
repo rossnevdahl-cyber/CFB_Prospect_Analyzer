@@ -90,7 +90,7 @@ export function RankingsImport({ defaultClassYear, existing }: { defaultClassYea
       <p className="text-xs text-muted">
         Select the rankings on the source&apos;s page, copy, and paste them here. Lines like “Jeremiah Smith, WR, Ohio State” (order is the rank),
         NFL Mock Draft Database cards (their “BB #” NFL board rank is kept too), and CSV/TSV tables with a Player column all work.
-        Each save is a dated snapshot; consensus uses each source&apos;s latest one.
+        Only each source&apos;s top 50 are kept. Each save is a dated snapshot; consensus uses each source&apos;s latest one.
       </p>
 
       <div className="grid gap-3 sm:grid-cols-4">
@@ -145,7 +145,8 @@ export function RankingsImport({ defaultClassYear, existing }: { defaultClassYea
         <div className="space-y-3">
           <div className="flex flex-wrap items-center gap-3 text-sm">
             <span>
-              Read <strong>{preview.rows.length}</strong> players ({preview.layout}) · <span className="text-emerald-700">{counts.matched} matched</span>
+              Read <strong>{preview.total}</strong> players ({preview.layout})
+              {preview.total > preview.rows.length && <> · keeping the top <strong>{preview.rows.length}</strong></>} · <span className="text-emerald-700">{counts.matched} matched</span>
               {counts.pick > 0 && <span className="text-amber-700"> · {counts.pick} to pick</span>}
               {counts.none > 0 && <span className="text-muted"> · {counts.none} unmatched (saved by name, matched later)</span>}
               {counts.nfl > 0 && <span className="text-muted"> · {counts.nfl} with NFL board rank</span>}

@@ -2,6 +2,7 @@ import "server-only";
 import { and, eq, inArray } from "drizzle-orm";
 import { parseAdpCsv } from "./adapters/adpCsv";
 import { parsePffCsv } from "./adapters/pffCsv";
+import { RANKING_LIMIT } from "./adapters/rankingsText";
 import { getDb } from "./db";
 import { adpEntries, importLog, pffImports, rosterPlayers } from "./db/schema";
 import { normalizeName, normalizeSchool } from "./names";
@@ -37,7 +38,7 @@ export async function matchToRoster(rows: Matchable[]): Promise<(string | null)[
   });
 }
 
-export type ImportResult = { kind: string; rows: number; matched: number; issues: { line: number; message: string }[]; unmatched: string[] };
+export type ImportResult = { kind: string; rows: number; matched: number; issues: { line: number; message: string }[]; unmatched: string[]; total?: number };
 
 export async function importPff(text: string, fileName: string, season: number): Promise<ImportResult> {
   const { rows, issues } = parsePffCsv(text, season);
@@ -69,7 +70,10 @@ export async function importPff(text: string, fileName: string, season: number):
 }
 
 export async function importAdp(text: string, fileName: string, source: string, asOf: string, format: string): Promise<ImportResult> {
-  const { rows, issues } = parseAdpCsv(text);
+  const parsed = parseAdpCsv(text);
+  const issues = parsed.issues;
+  // Only the 50 earliest-drafted players, matching the cap on fantasy rookie rankings.
+  const rows = [...parsed.rows].sort((a, b) => a.adp - b.adp).slice(0, RANKING_LIMIT);
   const ids = await matchToRoster(rows);
   const db = getDb();
   await db.delete(adpEntries).where(and(eq(adpEntries.source, source), eq(adpEntries.asOf, asOf), eq(adpEntries.format, format)));
@@ -89,7 +93,7 @@ export async function importAdp(text: string, fileName: string, source: string, 
       })),
     );
   }
-  return log("adp", fileName, rows.map((r) => r.playerName), ids, issues);
+  return { ...(await log("adp", fileName, rows.map((r) => r.playerName), ids, issues)), total: parsed.rows.length };
 }
 
 async function log(kind: string, fileName: string, names: string[], ids: (string | null)[], issues: ImportResult["issues"]): Promise<ImportResult> {
