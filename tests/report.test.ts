@@ -64,7 +64,7 @@ describe("buildReport (CFBD fixtures)", () => {
     expect(r.recruiting).toMatchObject({ stars: 4, rating: 0.9712, nationalRank: 25, positionRank: 3, year: 2024 });
 
     // 13/14. Gaps and sources
-    expect(r.gaps.map((g) => g.field)).toEqual(expect.arrayContaining(["Combine / pro day", "NFL big board rank", "Dynasty rookie ADP", "Composite grade and comps", "Offers"]));
+    expect(r.gaps.map((g) => g.field)).toEqual(expect.arrayContaining(["Combine / pro day", "Fantasy rookie rankings", "NFL consensus board rank", "Dynasty rookie ADP", "Composite grade and comps", "Offers"]));
     expect(r.sources[0].source).toBe("CollegeFootballData");
     expect(r.dataPulledAt).not.toBeNull();
 
@@ -88,12 +88,21 @@ describe("buildReport (CFBD fixtures)", () => {
     repo.historyRows = syntheticHistory("WR", 200, 3);
     repo.board = [{ source: "Consensus", rank: 20, projectedRound: null, asOf: "2026-09-01" }];
     repo.adpRows = [{ source: "FantasyPros", adp: 3.2, format: "superflex", asOf: "2026-09-15" }];
+    repo.fantasyRows = {
+      spots: [{ source: "Draft Sharks", rank: 9, format: "superflex", classYear: 2027, asOf: "2026-10-03" }],
+      consensus: [{ format: "superflex", classYear: 2027, rank: 7, positionRank: 3, average: 8.5, rankedBy: 2, sources: 2 }],
+    };
     repo.pffRows = [{ season: 2025, team: "Oregon", metrics: { yprr: 3.1, targets: 110 } }];
     const r = await buildReport(ID, { cfbd, repo, config });
     expect(r.grade.score).not.toBeNull();
     expect(r.grade.tier).toBeTruthy();
     expect(r.grade.confidence).toBeCloseTo(0.9, 5); // athleticism missing (untested)
     expect(r.rankings.projectedRound).toBe(1);
+    expect(r.rankings.consensus[0]).toMatchObject({ rank: 7, positionRank: 3 });
+    expect(r.gaps.map((g) => g.field)).not.toContain("Fantasy rookie rankings");
+    const md = reportToMarkdown(r);
+    expect(md).toContain("- Fantasy rookie consensus (2027 Superflex): #7, WR3 — average 8.5, ranked by 2 of 2 sources");
+    expect(md).toContain("- Draft Sharks (2027 Superflex): #9");
     expect(r.features.draft_pick).toBe(16); // round 1 midpoint
     expect(r.seasons[1].stats.targets).toBe(110);
     expect(r.seasons[1].derived.targetShare).toBeCloseTo(110 / 420, 10);

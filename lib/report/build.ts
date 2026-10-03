@@ -1,7 +1,7 @@
 import type { Recruit } from "cfbd";
 import type { CfbdAdapter } from "../adapters/cfbd";
 import { PFF_LABELS } from "../adapters/pffCsv";
-import { roundFromRank } from "../adapters/rankingsCsv";
+import { roundFromRank } from "../adapters/rankingsText";
 import { athleticScore } from "../athletic";
 import { findComps } from "../comps";
 import type { GradingConfig } from "../config";
@@ -169,9 +169,11 @@ export async function buildReport(cfbdId: string, deps: ReportDeps): Promise<Rep
   // 7. Rankings and draft capital.
   const bigBoard = await repo.bigBoard(cfbdId, latest.fullName, schools);
   const adp = await repo.adp(cfbdId, latest.fullName, schools);
+  const fantasy = await repo.fantasy(cfbdId, latest.fullName, schools);
   const topBoard = bigBoard[0];
   const projectedRound = topBoard ? (topBoard.projectedRound ?? roundFromRank(topBoard.rank)) : null;
-  if (!bigBoard.length) gaps.push({ section: "Rankings", field: "NFL big board rank", reason: "No big board import matched this player" });
+  if (!fantasy.spots.length) gaps.push({ section: "Rankings", field: "Fantasy rookie rankings", reason: "No fantasy rookie ranking import matched this player" });
+  if (!bigBoard.length) gaps.push({ section: "Rankings", field: "NFL consensus board rank", reason: "No NFL board rank imported (MDDB pastes include one) — draft capital is not graded" });
   if (!adp.length) gaps.push({ section: "Rankings", field: "Dynasty rookie ADP", reason: "No ADP import matched this player" });
   const draftPick = drafted?.draftPick ?? (projectedRound != null ? pickFromRound(projectedRound) : null);
 
@@ -204,7 +206,8 @@ export async function buildReport(cfbdId: string, deps: ReportDeps): Promise<Rep
   if (history.length) sources.push({ source: "nflverse + CFBD history", detail: `${history.length} drafted ${position}s for percentiles and comps`, fetchedAt: null });
   if (combine) sources.push({ source: combine.source, detail: "Athletic testing", fetchedAt: null });
   if (pff.length) sources.push({ source: "PFF College (CSV import)", detail: `${pff.length} season(s): ${[...new Set(pff.flatMap((p) => Object.keys(p.metrics)))].map((k) => PFF_LABELS[k] ?? k).slice(0, 6).join(", ")}`, fetchedAt: null });
-  for (const b of bigBoard) sources.push({ source: b.source, detail: "Big board (CSV import)", fetchedAt: b.asOf });
+  for (const f of fantasy.spots) sources.push({ source: f.source, detail: `Fantasy rookie ranking, ${f.classYear} ${f.format === "1qb" ? "1QB" : "Superflex"} (import)`, fetchedAt: f.asOf });
+  for (const b of bigBoard) sources.push({ source: b.source, detail: "NFL board rank (import)", fetchedAt: b.asOf });
   for (const a of adp) sources.push({ source: a.source, detail: `Rookie ADP, ${a.format} (CSV import)`, fetchedAt: a.asOf });
   if (birth) sources.push({ source: birth.source, detail: "Birthdate", fetchedAt: null });
   if (videos.fetchedAt) sources.push({ source: "YouTube Data API v3", detail: "Highlights and film (7-day cache)", fetchedAt: videos.fetchedAt });
@@ -244,6 +247,8 @@ export async function buildReport(cfbdId: string, deps: ReportDeps): Promise<Rep
     athletic: { combine, result: athletic },
     rankings: {
       bigBoard,
+      fantasy: fantasy.spots,
+      consensus: fantasy.consensus,
       adp,
       projectedRound,
       draft: drafted ? { year: drafted.draftYear, round: drafted.draftRound, pick: drafted.draftPick } : null,

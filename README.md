@@ -16,8 +16,8 @@ Defaults: full PPR, superflex, 5-pt passing TDs (`config/grading.yaml`).
 | --- | --- |
 | `/` | Search form: name (autocomplete from cached rosters), college (FBS dropdown), position. Exact match → report; close matches → pick list. |
 | `/player/[cfbdId]` | The report, 14 sections in spec order. Copy markdown, Download .md, Refresh data (bypasses every cache), Add to board. |
-| `/boards/[classYear]` | Big board: All/QB/RB/WR/TE tabs, drag-and-drop, ↑/↓ and "move to rank #", custom tiers as colored dividers, snapshots by date, notes search, Markdown/CSV export. |
-| `/imports` | CSV uploads for PFF College, NFL big boards and dynasty rookie ADP. |
+| `/boards/[classYear]` | Big board: All/QB/RB/WR/TE tabs, drag-and-drop, ↑/↓ and "move to rank #", custom tiers as colored dividers, snapshots by date, notes search, Markdown/CSV export. **My board vs consensus**: consensus rank and gap on every row, per-source columns, My guys / Fades filters, consensus players missing from the board (Superflex or 1QB). |
+| `/imports` | **Fantasy rookie rankings** by paste or file, with a match preview before saving; CSV uploads for PFF College and dynasty rookie ADP. |
 | `/api/report?id=…&format=md` | Report as JSON or Markdown (`&refresh=1` to bypass cache). |
 
 Every page and API route sits behind `APP_PASSWORD` (`proxy.ts`, Next 16's renamed middleware).
@@ -50,6 +50,7 @@ lets you run a workflow by hand once it is on `main`.
 | `backtest` | By hand | Grades every drafted player as of their final college season, correlates with NFL years 1–3 PPG, commits `docs/backtest.md`. |
 | `tune-weights` | By hand | Searches weights on older draft classes, checks them on newer ones, commits `docs/weight-tuning.md`. Never edits the config. |
 | `ci` | Every PR and push to `main` | Lint, type check, tests. |
+| `migrate` | Push to `main` that changes `drizzle/` | Applies new database migrations so the deployed app never runs ahead of the schema. |
 
 All jobs run migrations first. CFBD rejects concurrent calls to one endpoint, so the adapter caps
 requests in flight (2 for the app, 1 for jobs) and retries throttled calls with backoff.
@@ -115,7 +116,9 @@ signal; CFBD-only efficiency is near noise for WR/TE until PFF history exists. D
 | CollegeFootballData | `lib/adapters/cfbd.ts` | Rosters, box scores, game box scores (games played), PPA, team stats, advanced stats, SP+, games (SOS), recruiting, draft picks. |
 | nflverse | `lib/adapters/nflverse.ts` | Draft picks (gsis/pfr ids), combine, birthdates, NFL season stats. Joined to CFBD draft picks by draft year + overall pick. |
 | PFF College | `lib/adapters/pffCsv.ts` | Manual CSV export only — no scraping. |
-| Big boards / ADP | `rankingsCsv.ts`, `adpCsv.ts` | CSV upload in v1. |
+| Fantasy rookie rankings | `rankingsText.ts` | Pasted from the source's page (no scraping): `Name, POS, School` lines (Draft Sharks), ranking cards (NFL Mock Draft Database, whose "BB #" NFL board rank also feeds draft capital), or CSV/TSV. Dated snapshots per source, format and class. |
+| Consensus | `lib/consensus.ts` | Average of each source's latest rank; a source that leaves a player off counts as one past its last rank. Ties go to the player more sources rank. |
+| Dynasty rookie ADP | `adpCsv.ts` | CSV upload. |
 | YouTube Data API v3 | `lib/adapters/youtube.ts` | 2 searches (200 units) + 1 `videos.list` per uncached report ≈ 49 reports/day on the free quota; cached 7 days per player. Pin/hide/paste overrides persist across refreshes. |
 | Birthdates | `data/overrides/birthdates.csv` | `cfbd_id,name,birthdate,source` for current players; nflverse for drafted ones. |
 
@@ -150,7 +153,7 @@ end-to-end report build including the fully cached path and markdown section ord
 | 2 History and metrics | ✅ 1,697 drafted players; derived metrics match hand calculations in tests. |
 | 3 Grade and comps | ✅ Config-driven; backtest and weight tuning run on production data. |
 | 4 Notes and boards | ✅ 40-player reorder, position views, phone controls and snapshot reload tested in a browser. |
-| 5 Imports | ✅ PFF, big board and ADP uploads fill the next report (browser-tested). Awaiting first real files. |
+| 5 Imports | ✅ PFF and ADP uploads fill the next report; fantasy rookie rankings paste with a match preview and feed the board-vs-consensus view (browser-tested with Draft Sharks and MDDB). |
 | 6 Video links | ✅ Spot-checked on production: the videos shown were the right players. |
 
 **Remaining:** replace the hand-built CFBD test fixture with recorded responses

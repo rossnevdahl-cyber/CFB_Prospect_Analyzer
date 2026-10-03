@@ -40,18 +40,56 @@ export function normalizeName(name: string): string {
   return tokens.join(" ");
 }
 
+/**
+ * Alternate school names used by ranking sites, mapped to the normalized CFBD name.
+ * Keys and values are already normalized (lower case, punctuation stripped).
+ */
+const SCHOOL_ALIASES: Record<string, string> = {
+  mississippi: "ole miss",
+  "miami fl": "miami",
+  "miami florida": "miami",
+  "miami fla": "miami",
+  "miami ohio": "miami oh",
+  "southern california": "usc",
+  "southern cal": "usc",
+  "louisiana state": "lsu",
+  "brigham young": "byu",
+  "central florida": "ucf",
+  "texas christian": "tcu",
+  "southern methodist": "smu",
+  "north carolina state": "nc state",
+  "n c state": "nc state",
+  pittsburgh: "pitt",
+  connecticut: "uconn",
+  massachusetts: "umass",
+  "appalachian state": "app state",
+  "louisiana lafayette": "louisiana",
+  "ul lafayette": "louisiana",
+  "louisiana monroe": "ul monroe",
+  "texas san antonio": "utsa",
+  "texas el paso": "utep",
+  "nevada las vegas": "unlv",
+  "alabama birmingham": "uab",
+  "florida international": "fiu",
+  "southern mississippi": "southern miss",
+  "middle tennessee state": "middle tennessee",
+  hawaii: "hawai i",
+};
+
 export function normalizeSchool(s: string | null | undefined): string {
   if (!s) return "";
-  return s
+  const n = s
     .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
+    .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
+    .replace(/[\u2018\u2019'`]/g, " ")
     .replace(/&/g, " and ")
     .replace(/\bst\.?(?=\s|$)/g, "state")
     .replace(/[^a-z0-9]+/g, " ")
     .replace(/\buniversity( of)?\b/g, "")
     .trim()
     .replace(/\s+/g, " ");
+  return SCHOOL_ALIASES[n] ?? n;
 }
 
 export function levenshtein(a: string, b: string): number {

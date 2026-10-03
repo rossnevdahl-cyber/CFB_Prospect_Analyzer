@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import { uploadCsv } from "@/app/imports/actions";
 
-export function ImportForm({ kind, title, help, defaultSeason }: { kind: "pff" | "bigboard" | "adp"; title: string; help: string; defaultSeason?: number }) {
+export function ImportForm({ kind, title, help, defaultSeason }: { kind: "pff" | "adp"; title: string; help: string; defaultSeason?: number }) {
   const [state, action, pending] = useActionState(uploadCsv, undefined);
   const today = new Date().toISOString().slice(0, 10);
   return (
@@ -21,7 +21,7 @@ export function ImportForm({ kind, title, help, defaultSeason }: { kind: "pff" |
         <>
           <label className="block">
             <span className="label">Source</span>
-            <input name="source" className="input mt-1" placeholder={kind === "adp" ? "FantasyPros" : "Consensus Big Board"} required />
+            <input name="source" className="input mt-1" placeholder="FantasyPros" required />
           </label>
           <label className="block">
             <span className="label">As of</span>

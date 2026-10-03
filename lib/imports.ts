@@ -2,9 +2,8 @@ import "server-only";
 import { and, eq, inArray } from "drizzle-orm";
 import { parseAdpCsv } from "./adapters/adpCsv";
 import { parsePffCsv } from "./adapters/pffCsv";
-import { parseBigBoardCsv } from "./adapters/rankingsCsv";
 import { getDb } from "./db";
-import { adpEntries, bigBoardRanks, importLog, pffImports, rosterPlayers } from "./db/schema";
+import { adpEntries, importLog, pffImports, rosterPlayers } from "./db/schema";
 import { normalizeName, normalizeSchool } from "./names";
 import { normalizePosition } from "./types";
 
@@ -67,31 +66,6 @@ export async function importPff(text: string, fileName: string, season: number):
     else await db.insert(pffImports).values(v);
   }
   return log("pff", fileName, rows.map((r) => r.playerName), ids, issues);
-}
-
-export async function importBigBoard(text: string, fileName: string, source: string, asOf: string): Promise<ImportResult> {
-  const { rows, issues } = parseBigBoardCsv(text);
-  const ids = await matchToRoster(rows);
-  const db = getDb();
-  // Re-importing the same source and date replaces that snapshot.
-  await db.delete(bigBoardRanks).where(and(eq(bigBoardRanks.source, source), eq(bigBoardRanks.asOf, asOf)));
-  if (rows.length) {
-    await db.insert(bigBoardRanks).values(
-      rows.map((r, i) => ({
-        cfbdId: ids[i],
-        playerName: r.playerName,
-        nameNorm: normalizeName(r.playerName),
-        school: r.school,
-        schoolNorm: normalizeSchool(r.school),
-        position: r.position,
-        rank: r.rank,
-        projectedRound: r.projectedRound,
-        source,
-        asOf,
-      })),
-    );
-  }
-  return log("bigboard", fileName, rows.map((r) => r.playerName), ids, issues);
 }
 
 export async function importAdp(text: string, fileName: string, source: string, asOf: string, format: string): Promise<ImportResult> {

@@ -29,6 +29,10 @@ export type BoardSpot = { classYear: number; rank: number; positionRank: number;
 
 export type BigBoardSpot = { source: string; rank: number; projectedRound: number | null; asOf: string };
 export type AdpSpot = { source: string; adp: number; format: string; asOf: string };
+/** A fantasy rookie ranking from one source's latest snapshot. */
+export type FantasySpot = { source: string; rank: number; format: string; classYear: number; asOf: string };
+/** The player's place in the consensus of all fantasy-ranking sources for a class and format. */
+export type ConsensusSpot = { format: string; classYear: number; rank: number; positionRank: number | null; average: number; rankedBy: number; sources: number };
 
 export type VideoSection = {
   status: "ok" | "not_configured" | "error";
@@ -81,6 +85,8 @@ export type Report = {
   athletic: { combine: Combine | null; result: AthleticResult };
   rankings: {
     bigBoard: BigBoardSpot[];
+    fantasy: FantasySpot[];
+    consensus: ConsensusSpot[];
     adp: AdpSpot[];
     projectedRound: number | null;
     draft: { year: number; round: number | null; pick: number | null } | null;

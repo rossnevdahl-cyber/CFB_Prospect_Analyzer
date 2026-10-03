@@ -165,6 +165,35 @@ export const bigBoardRanks = pgTable(
   (t) => [index("bb_name_idx").on(t.nameNorm)],
 );
 
+/**
+ * Fantasy rookie rankings (Draft Sharks, NFL Mock Draft Database, …). Each import is a dated
+ * snapshot per source, format and draft class; consensus uses each source's latest snapshot.
+ */
+export const fantasyRankings = pgTable(
+  "fantasy_rankings",
+  {
+    id: serial("id").primaryKey(),
+    source: text("source").notNull(),
+    asOf: date("as_of").notNull(),
+    format: text("format").notNull(),
+    classYear: integer("class_year").notNull(),
+    rank: integer("rank").notNull(),
+    cfbdId: text("cfbd_id"),
+    playerName: text("player_name").notNull(),
+    nameNorm: text("name_norm").notNull(),
+    school: text("school"),
+    schoolNorm: text("school_norm").notNull().default(""),
+    position: text("position"),
+    nflRank: integer("nfl_rank"),
+    importedAt: timestamp("imported_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("fr_snapshot_idx").on(t.classYear, t.format, t.source, t.asOf),
+    index("fr_player_idx").on(t.cfbdId),
+    index("fr_name_idx").on(t.nameNorm),
+  ],
+);
+
 export const adpEntries = pgTable(
   "adp_entries",
   {

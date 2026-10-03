@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { fmtAge, fmtDate, fmtFeature, fmtInt, fmtNum, fmtPct, formatHeight } from "@/lib/format";
+import { fmtAge, fmtDate, fmtFeature, fmtInt, fmtLeagueFormat, fmtNum, fmtPct, formatHeight } from "@/lib/format";
 import { featureDefs } from "@/lib/grading";
 import { advancedColumns, statColumns, teamColumns } from "@/lib/report/tables";
 import type { Report } from "@/lib/report/types";
@@ -182,9 +182,27 @@ export function ReportView({ report: r }: { report: Report }) {
 
       {/* 8. Rankings */}
       <Section id="rankings" title="Rankings">
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <div className="label">NFL big board</div>
+            <div className="label">Fantasy rookie consensus</div>
+            {(r.rankings.consensus ?? []).length ? (
+              (r.rankings.consensus ?? []).map((c) => (
+                <div key={`${c.classYear}${c.format}`} className="text-sm">
+                  <strong>#{c.rank}</strong>
+                  {c.positionRank != null ? ` · ${p.position}${c.positionRank}` : ""} — {c.classYear} {fmtLeagueFormat(c.format)}, avg {fmtNum(c.average, 1)}, ranked by {c.rankedBy} of {c.sources}
+                </div>
+              ))
+            ) : (
+              <div className="text-sm text-muted">Not imported</div>
+            )}
+            {(r.rankings.fantasy ?? []).map((f) => (
+              <div key={`${f.source}${f.classYear}${f.format}`} className="text-xs text-muted">
+                #{f.rank} {f.source} ({fmtLeagueFormat(f.format)}, {fmtDate(f.asOf)})
+              </div>
+            ))}
+          </div>
+          <div>
+            <div className="label">NFL consensus board</div>
             {r.rankings.bigBoard.length ? (
               r.rankings.bigBoard.map((b) => (
                 <div key={b.source} className="text-sm">

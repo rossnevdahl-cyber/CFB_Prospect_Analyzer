@@ -5,6 +5,7 @@ import { getDb } from "../db";
 import {
   adpEntries,
   bigBoardRanks,
+  fantasyRankings,
   boards,
   combineResults,
   historyPlayers,
@@ -17,7 +18,8 @@ import type { HistoryRow } from "../grading";
 import { normalizeName, normalizeSchool } from "../names";
 import { parseCsv } from "../adapters/csv";
 import { normalizePosition, type Combine, type Position } from "../types";
-import type { AdpSpot, BigBoardSpot, BoardSpot, Note, RosterRow } from "./types";
+import type { AdpSpot, BigBoardSpot, BoardSpot, ConsensusSpot, FantasySpot, Note, RosterRow } from "./types";
+import { consensusFor } from "../rankings";
 
 export type PffSeason = { season: number; team: string | null; metrics: Record<string, number> };
 
@@ -30,6 +32,7 @@ export interface ReportRepo {
   pff(cfbdId: string, name: string, schools: string[]): Promise<PffSeason[]>;
   bigBoard(cfbdId: string, name: string, schools: string[]): Promise<BigBoardSpot[]>;
   adp(cfbdId: string, name: string, schools: string[]): Promise<AdpSpot[]>;
+  fantasy(cfbdId: string, name: string, schools: string[]): Promise<{ spots: FantasySpot[]; consensus: ConsensusSpot[] }>;
   birthdate(cfbdId: string, name: string): Promise<{ date: string; source: string } | null>;
   boardSpot(cfbdId: string): Promise<BoardSpot | null>;
   notes(cfbdId: string): Promise<Note[]>;
@@ -160,6 +163,35 @@ export class PgReportRepo implements ReportRepo {
       .filter((r) => r.cfbdId === cfbdId || !r.schoolNorm || norms.includes(r.schoolNorm))
       .map((r) => ({ source: `${r.source} (${r.format})`, adp: r.adp, format: r.format, asOf: r.asOf }));
     return latestPerSource(spots).map((s) => ({ ...s, source: s.source.replace(/ \([^)]*\)$/, "") }));
+  }
+
+  /** Latest rank per source for every class and format the player appears in, plus consensus. */
+  async fantasy(cfbdId: string, name: string, schools: string[]): Promise<{ spots: FantasySpot[]; consensus: ConsensusSpot[] }> {
+    const nameNorm = normalizeName(name);
+    const rows = await getDb()
+      .select()
+      .from(fantasyRankings)
+      .where(or(eq(fantasyRankings.cfbdId, cfbdId), eq(fantasyRankings.nameNorm, nameNorm)));
+    const norms = schools.map(normalizeSchool);
+    const mine = rows.filter((r) => r.cfbdId === cfbdId || (!r.cfbdId && (!r.schoolNorm || norms.includes(r.schoolNorm))));
+    const latest = new Map<string, (typeof mine)[number]>();
+    for (const r of mine) {
+      const k = `${r.classYear}|${r.format}|${r.source}`;
+      const cur = latest.get(k);
+      if (!cur || r.asOf > cur.asOf) latest.set(k, r);
+    }
+    const spots = [...latest.values()]
+      .map((r) => ({ source: r.source, rank: r.rank, format: r.format, classYear: r.classYear, asOf: r.asOf }))
+      .sort((a, b) => b.classYear - a.classYear || a.format.localeCompare(b.format) || a.rank - b.rank);
+    const consensus: ConsensusSpot[] = [];
+    for (const k of new Set(spots.map((s) => `${s.classYear}|${s.format}`))) {
+      const [classYear, format] = [Number(k.split("|")[0]), k.split("|")[1]];
+      const { snapshots, consensus: entries } = await consensusFor(classYear, format);
+      const e = entries.find((x) => x.cfbdId === cfbdId) ?? entries.find((x) => !x.cfbdId && normalizeName(x.name) === nameNorm);
+      // Only the latest snapshots count: an older snapshot for this player may not be among them.
+      if (e && e.rankedBy > 0) consensus.push({ format, classYear, rank: e.rank, positionRank: e.positionRank, average: e.average, rankedBy: e.rankedBy, sources: snapshots.length });
+    }
+    return { spots, consensus };
   }
 
   async birthdate(cfbdId: string, name: string) {

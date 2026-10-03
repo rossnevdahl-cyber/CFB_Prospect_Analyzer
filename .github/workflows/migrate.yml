@@ -1,0 +1,24 @@
+name: migrate
+
+# Apply new database migrations as soon as they reach main, so the deployed app never runs
+# against a schema that is behind it.
+on:
+  push:
+    branches: [main]
+    paths: ["drizzle/**"]
+  workflow_dispatch:
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm db:migrate

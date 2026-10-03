@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { importAdp, importBigBoard, importPff, type ImportResult } from "@/lib/imports";
+import { importAdp, importPff, type ImportResult } from "@/lib/imports";
 
 export type ImportState = { result?: ImportResult; error?: string } | undefined;
 
@@ -20,9 +20,6 @@ export async function uploadCsv(_prev: ImportState, form: FormData): Promise<Imp
       const season = Number(form.get("season"));
       if (!season) return { error: "Season is required for PFF exports." };
       result = await importPff(text, file.name, season);
-    } else if (kind === "bigboard") {
-      if (!source) return { error: "Name the source (e.g. Consensus Big Board)." };
-      result = await importBigBoard(text, file.name, source, asOf);
     } else if (kind === "adp") {
       if (!source) return { error: "Name the source (e.g. FantasyPros)." };
       result = await importAdp(text, file.name, source, asOf, String(form.get("format") || "superflex"));

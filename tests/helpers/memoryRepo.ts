@@ -1,7 +1,7 @@
 import type { CombineRef } from "@/lib/athletic";
 import type { HistoryRow } from "@/lib/grading";
 import type { PffSeason, ReportRepo } from "@/lib/report/repo";
-import type { AdpSpot, BigBoardSpot, BoardSpot, Note, RosterRow } from "@/lib/report/types";
+import type { AdpSpot, BigBoardSpot, BoardSpot, ConsensusSpot, FantasySpot, Note, RosterRow } from "@/lib/report/types";
 import type { Combine, Position } from "@/lib/types";
 
 export class MemoryRepo implements ReportRepo {
@@ -12,6 +12,7 @@ export class MemoryRepo implements ReportRepo {
   pffRows: PffSeason[] = [];
   board: BigBoardSpot[] = [];
   adpRows: AdpSpot[] = [];
+  fantasyRows: { spots: FantasySpot[]; consensus: ConsensusSpot[] } = { spots: [], consensus: [] };
   birth: { date: string; source: string } | null = null;
   spot: BoardSpot | null = null;
   noteRows: Note[] = [];
@@ -36,6 +37,9 @@ export class MemoryRepo implements ReportRepo {
   }
   async adp() {
     return this.adpRows;
+  }
+  async fantasy() {
+    return this.fantasyRows;
   }
   async birthdate() {
     return this.birth;
