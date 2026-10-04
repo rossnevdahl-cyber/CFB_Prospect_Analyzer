@@ -7,11 +7,12 @@ export function ImportForm({ kind, title, help, defaultSeason }: { kind: "pff" |
   const [state, action, pending] = useActionState(uploadCsv, undefined);
   const today = new Date().toISOString().slice(0, 10);
   return (
-    <form action={action} className="card space-y-3 p-5">
+    <form action={action} className="card min-w-0 space-y-3 p-5">
       <h2 className="card-title">{title}</h2>
       <p className="text-xs text-muted">{help}</p>
       <input type="hidden" name="kind" value={kind} />
-      <input type="file" name="file" accept=".csv,text/csv" required className="block w-full text-sm" />
+      {/* No accept filter: Android greys out CSVs that apps label with another file type. */}
+      <input type="file" name="file" required className="block w-full text-sm" />
       {kind === "pff" ? (
         <label className="block">
           <span className="label">Season</span>

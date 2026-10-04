@@ -21,7 +21,7 @@ export default async function ImportsPage() {
           Nothing here is scraped — export or copy the data yourself in line with each site&apos;s terms.
         </p>
       </div>
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <RankingsImport defaultClassYear={currentSeason() + 1} existing={sets} />
         <ImportForm
           kind="pff"
