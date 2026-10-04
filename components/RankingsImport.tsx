@@ -3,6 +3,7 @@
 import { useMemo, useState, useTransition } from "react";
 import { previewRankingsAction, saveRankingsAction } from "@/app/imports/rankingsActions";
 import type { Preview, RankingSet } from "@/lib/rankings";
+import { uploadedFileText } from "@/lib/adapters/htmlText";
 import { fmtDate } from "@/lib/format";
 
 const KNOWN_SOURCES = ["Draft Sharks", "NFL Mock Draft Database"];
@@ -21,6 +22,7 @@ export function RankingsImport({ defaultClassYear, existing }: { defaultClassYea
   const [preview, setPreview] = useState<Preview | null>(null);
   const [choices, setChoices] = useState<Choice[]>([]);
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
+  const [fileNote, setFileNote] = useState<string | null>(null);
   const [pending, start] = useTransition();
 
   const counts = useMemo(() => {
@@ -76,7 +78,7 @@ export function RankingsImport({ defaultClassYear, existing }: { defaultClassYea
   const setChoice = (i: number, patch: Partial<Choice>) => setChoices((cs) => cs.map((c, k) => (k === i ? { ...c, ...patch } : c)));
 
   return (
-    <div className="card space-y-3 p-5 lg:col-span-3">
+    <div className="card min-w-0 space-y-3 p-5 lg:col-span-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 className="card-title mb-0">Fantasy rookie rankings</h2>
         <div className="flex gap-1">
@@ -128,15 +130,34 @@ export function RankingsImport({ defaultClassYear, existing }: { defaultClassYea
           </button>
         </div>
       ) : (
-        <input
-          type="file"
-          accept=".csv,.tsv,.txt,text/csv,text/plain"
-          className="block w-full text-sm"
-          onChange={async (e) => {
-            const f = e.target.files?.[0];
-            if (f) runPreview(await f.text());
-          }}
-        />
+        <div className="space-y-1">
+          {/* No accept filter: phones grey out files whose type they label differently (saved pages, CSVs from some apps). */}
+          <input
+            type="file"
+            className="block w-full text-sm"
+            onChange={async (e) => {
+              const f = e.target.files?.[0];
+              e.target.value = "";
+              if (!f) return;
+              if (f.size > 20 * 1024 * 1024) {
+                setMessage({ ok: false, text: `${f.name} is over 20 MB.` });
+                return;
+              }
+              const raw = await f.text();
+              if (/^%PDF|^PK\u0003\u0004/.test(raw.slice(0, 8))) {
+                setMessage({ ok: false, text: `${f.name} is a PDF or spreadsheet file. Save the page (.mht/.html) or export CSV, or paste the text instead.` });
+                return;
+              }
+              const { text: pageText, kind } = uploadedFileText(raw);
+              setFileNote(`${f.name}${kind === "text" ? "" : ` — read as a saved web page`}`);
+              runPreview(pageText);
+            }}
+          />
+          <p className="text-xs text-muted">
+            CSV/TSV/text files, or a rankings page saved from your browser (.mht, .mhtml, .html).
+            {fileNote && <span className="block">Loaded: {fileNote}</span>}
+          </p>
+        </div>
       )}
 
       {message && <p className={`text-sm ${message.ok ? "text-emerald-700" : "text-red-600"}`}>{message.text}</p>}
@@ -183,7 +204,7 @@ export function RankingsImport({ defaultClassYear, existing }: { defaultClassYea
                         <input type="checkbox" checked={c?.include ?? false} onChange={(e) => setChoice(i, { include: e.target.checked })} aria-label={`Include ${r.name}`} />
                       </td>
                       <td className="text-right">{r.rank}</td>
-                      <td>
+                      <td className="whitespace-normal">
                         {r.name}
                         <span className="text-muted">
                           {" "}
