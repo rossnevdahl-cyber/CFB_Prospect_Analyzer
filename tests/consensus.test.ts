@@ -67,3 +67,12 @@ describe("compareBoard", () => {
     expect(missingFromBoard(board, c, 1, "QB").map((e) => e.name)).toEqual(["Dante Moore"]);
   });
 });
+
+describe("boardEntryFor", () => {
+  it("builds a board row for matched players only", async () => {
+    const { boardEntryFor } = await import("@/lib/consensus");
+    const c = buildConsensus([ds, mddb]);
+    expect(boardEntryFor(c.find((e) => e.name === "Dante Moore")!)).toEqual({ cfbdId: "2", name: "Dante Moore", position: "QB", school: "oregon", tier: null });
+    expect(boardEntryFor(c.find((e) => e.name === "Wayne Knight")!)).toBeNull();
+  });
+});

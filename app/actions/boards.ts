@@ -4,7 +4,10 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { moveToRank, moveWithinPosition, moveOverall, removeEntry, setTier, type BoardEntry, type BoardTier } from "@/lib/boards";
 import { addToBoard, getBoard, saveBoard } from "@/lib/boardsRepo";
-import { positionSchema } from "@/lib/types";
+import { desc, eq } from "drizzle-orm";
+import { getDb } from "@/lib/db";
+import { rosterPlayers } from "@/lib/db/schema";
+import { normalizePosition, positionSchema } from "@/lib/types";
 
 const entrySchema = z.object({
   cfbdId: z.string().min(1),
@@ -17,7 +20,16 @@ const entrySchema = z.object({
 const touch = (classYear: number) => revalidatePath(`/boards/${classYear}`);
 
 export async function addPlayerToBoard(classYear: number, entry: BoardEntry) {
-  await addToBoard(classYear, entrySchema.parse(entry));
+  const parsed = entrySchema.parse(entry);
+  // Board rows use the player's official CFBD name, school and position, whatever spelling the caller had
+  // (a ranking site may say "Mississippi" or add "III").
+  const [roster] = await getDb()
+    .select({ name: rosterPlayers.fullName, team: rosterPlayers.team, position: rosterPlayers.position })
+    .from(rosterPlayers)
+    .where(eq(rosterPlayers.cfbdId, parsed.cfbdId))
+    .orderBy(desc(rosterPlayers.season))
+    .limit(1);
+  await addToBoard(classYear, roster ? { ...parsed, name: roster.name, school: roster.team, position: normalizePosition(roster.position) ?? parsed.position } : parsed);
   touch(classYear);
   revalidatePath(`/player/${entry.cfbdId}`);
 }

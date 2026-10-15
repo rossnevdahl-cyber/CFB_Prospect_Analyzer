@@ -21,6 +21,8 @@ export function ConsensusPanel(props: {
   sources: { source: string; asOf: string }[];
   format: string;
   view: string | null;
+  /** Adds a consensus player to the bottom of this board; absent for read-only snapshots. */
+  onAdd?: (c: ConsensusEntry) => void;
 }) {
   const [filter, setFilter] = useState<Filter>("all");
   const position = props.view && props.view !== "ALL" ? props.view : null;
@@ -129,21 +131,34 @@ export function ConsensusPanel(props: {
             Consensus top {limit}
             {position ? ` ${position}s` : ""} not on my board ({missing.length})
           </summary>
+          {props.onAdd && <p className="mt-2 text-xs text-muted">“+ Add” puts the player at the bottom of this board; drag or use “move to rank” from there.</p>}
           <ul className="mt-2 grid gap-1 text-sm sm:grid-cols-2">
             {missing.map((m) => (
-              <li key={m.key}>
-                <span className="tabular-nums text-muted">#{position ? m.positionRank : m.rank}</span>{" "}
-                {m.cfbdId ? (
-                  <Link className="hover:underline" href={`/player/${m.cfbdId}`}>
-                    {m.name}
-                  </Link>
-                ) : (
-                  m.name
-                )}
-                <span className="text-xs text-muted">
-                  {" "}
-                  {m.position} · {m.school} · avg {fmtNum(m.average, 1)}
-                  {!m.cfbdId && " · not matched to CFBD"}
+              <li key={m.key} className="flex items-center gap-2">
+                {props.onAdd &&
+                  (m.cfbdId ? (
+                    <button className="btn-sm shrink-0" onClick={() => props.onAdd?.(m)} aria-label={`Add ${m.name} to my board`}>
+                      + Add
+                    </button>
+                  ) : (
+                    <span className="btn-sm shrink-0 cursor-not-allowed opacity-40" title="Not matched to a CFBD player, so it can't go on a board">
+                      + Add
+                    </span>
+                  ))}
+                <span className="min-w-0">
+                  <span className="tabular-nums text-muted">#{position ? m.positionRank : m.rank}</span>{" "}
+                  {m.cfbdId ? (
+                    <Link className="hover:underline" href={`/player/${m.cfbdId}`}>
+                      {m.name}
+                    </Link>
+                  ) : (
+                    m.name
+                  )}
+                  <span className="text-xs text-muted">
+                    {" "}
+                    {m.position} · {m.school} · avg {fmtNum(m.average, 1)}
+                    {!m.cfbdId && " · not matched to CFBD"}
+                  </span>
                 </span>
               </li>
             ))}
