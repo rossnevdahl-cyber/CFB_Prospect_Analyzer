@@ -15,6 +15,7 @@ import { CSS } from "@dnd-kit/utilities";
 import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
 import {
+  addPlayerToBoard,
   movePlayer,
   movePlayerToClass,
   removePlayer,
@@ -23,6 +24,7 @@ import {
   setPlayerTier,
 } from "@/app/actions/boards";
 import {
+  addEntry,
   moveOverall,
   moveWithinPosition,
   positionOf,
@@ -33,7 +35,7 @@ import {
   type BoardGrades,
   type BoardTier,
 } from "@/lib/boards";
-import { compareBoard, type ConsensusEntry } from "@/lib/consensus";
+import { boardEntryFor, compareBoard, type ConsensusEntry } from "@/lib/consensus";
 import { POSITIONS, type Position } from "@/lib/types";
 import { ConsensusPanel, GapBadge } from "./ConsensusPanel";
 
@@ -273,7 +275,7 @@ export function BoardEditor(props: {
       </div>
       {error && <p className="text-sm text-red-600">{error}</p>}
       {!visible.length && <p className="card p-4 text-sm text-muted">No players {view === "ALL" ? "on this board yet — use “Add to board” on a report." : `at ${view}.`}</p>}
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+      <DndContext id={`board-${props.classYear}`} sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
         <SortableContext items={visible.map((e) => e.cfbdId)} strategy={verticalListSortingStrategy}>
           <ol className="space-y-1">
             {visible.map((e, i) => {
@@ -304,7 +306,21 @@ export function BoardEditor(props: {
           </ol>
         </SortableContext>
       </DndContext>
-      <ConsensusPanel entries={entries} consensus={props.consensus} sources={props.sources} format={props.format} view={view} />
+      <ConsensusPanel
+        entries={entries}
+        consensus={props.consensus}
+        sources={props.sources}
+        format={props.format}
+        view={view}
+        onAdd={
+          props.readOnly
+            ? undefined
+            : (c) => {
+                const entry = boardEntryFor(c);
+                if (entry) run(addEntry(entries, entry), () => addPlayerToBoard(props.classYear, entry));
+              }
+        }
+      />
       {!props.readOnly && <TierEditor classYear={props.classYear} tiers={tiers} onSaved={setTiers} />}
     </div>
   );

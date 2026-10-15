@@ -149,3 +149,9 @@ export function missingFromBoard(board: { cfbdId: string }[], consensus: Consens
     .filter((c) => (pos ? c.position === pos && (c.positionRank ?? Infinity) <= limit : c.rank <= limit))
     .filter((c) => !c.cfbdId || !on.has(c.cfbdId));
 }
+
+/** A board row for a consensus player, or null when the player isn't matched to CFBD (boards key on CFBD ids). */
+export function boardEntryFor(c: ConsensusEntry): { cfbdId: string; name: string; position: string; school: string; tier: null } | null {
+  if (!c.cfbdId) return null;
+  return { cfbdId: c.cfbdId, name: c.name, position: c.position ?? "", school: c.school ?? "", tier: null };
+}
